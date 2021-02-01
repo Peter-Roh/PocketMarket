@@ -6,6 +6,7 @@ import { IsEmail, IsEnum } from 'class-validator';
 import * as bcrypt from 'bcrypt';
 
 enum UserRole {
+    // guest도 추가해야 할까...?
     Client,
     Owner,
 }
@@ -30,10 +31,13 @@ export class User extends CoreEntity {
     @IsEnum(UserRole)
     role: UserRole;
 
+    // password encryption 
+    // use bcrypt for security 
     @BeforeInsert()
     async hashPassword(): Promise<void> {
         try {
-            this.password = await bcrypt.hash(this.password, 11);
+            const SALT_ROUNDS = 11;
+            this.password = await bcrypt.hash(this.password, SALT_ROUNDS);
         } catch (e) {
             console.log(e);
             throw new InternalServerErrorException();

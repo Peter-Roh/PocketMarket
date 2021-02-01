@@ -11,9 +11,12 @@ export class UsersService {
     ) {}
 
     async createAccount({ email, password, role }: CreateAccountInput): Promise<{accepted: boolean; error?: string}> {
+        // check new user 
+        // create user & hash the password 
         try {
             const exists = await this.users.findOne({ email });
             if(exists) {
+                // make error 
                 return { accepted: false, error: 'User exists with the email already' };
             }
             await this.users.save(this.users.create({ email, password, role }));
