@@ -2,7 +2,7 @@ import { Field, ObjectType } from "@nestjs/graphql";
 
 @ObjectType()
 export class CoreDTO {
-    // controls errors when using mutation 
+    // controls errors when using mutations 
     @Field(is => Boolean)
     accepted: boolean;
     
