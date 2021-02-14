@@ -1,8 +1,8 @@
-import { CoreEntity } from './../../core/entities/core.entity';
 import { Field, InputType, ObjectType, registerEnumType } from '@nestjs/graphql';
-import { BeforeInsert, Column, Entity } from 'typeorm';
+import { CoreEntity } from './../../core/entities/core.entity';
+import { BeforeInsert, BeforeUpdate, Column, Entity } from 'typeorm';
 import { InternalServerErrorException } from '@nestjs/common';
-import { IsEmail, IsEnum, IsString } from 'class-validator';
+import { IsDate, IsEmail, IsEnum, IsString } from 'class-validator';
 import * as bcrypt from 'bcrypt';
 
 enum UserRole {
@@ -30,7 +30,7 @@ registerEnumType(Gender, { name: 'Gender' });
 @ObjectType()
 @Entity()
 export class User extends CoreEntity {
-    @Column()
+    @Column({ unique: true })
     @Field(is => String)
     @IsEmail()
     email: string;
@@ -44,7 +44,7 @@ export class User extends CoreEntity {
     @IsString()
     nickname: string;
 
-    @Column()
+    @Column({ select: false })
     @Field(is => String)
     @IsString()
     password: string;
@@ -54,7 +54,7 @@ export class User extends CoreEntity {
     @IsEnum(UserRole)
     role: UserRole;
 
-    @Column({ type: 'enum', enum: SignupMethod })
+    @Column({ type: 'enum', enum: SignupMethod, default: SignupMethod.PocketMarket })
     @Field(is => SignupMethod)
     @IsEnum(SignupMethod)
     method: SignupMethod
@@ -68,19 +68,23 @@ export class User extends CoreEntity {
     @IsEnum(Gender)
     gender: Gender
 
-    // birthday
-
+    @Column()
+    @Field(is => Date)
+    @IsDate()
+    birthday: Date;
 
     // password encryption
     // use bcrypt for security
     @BeforeInsert()
+    @BeforeUpdate()
     async hashPassword(): Promise<void> {
-        try {
-            const SALT_ROUNDS = 11;
-            this.password = await bcrypt.hash(this.password, SALT_ROUNDS);
-        } catch (e) {
-            console.log(e);
-            throw new InternalServerErrorException();
+        if(this.password) {
+            try {
+                const SALT_ROUNDS = 11;
+                this.password = await bcrypt.hash(this.password, SALT_ROUNDS);
+            } catch (e) {
+                throw new InternalServerErrorException();
+            }
         }
     }
 
@@ -88,8 +92,7 @@ export class User extends CoreEntity {
         try {
             const accepted = await bcrypt.compare(passwordInput, this.password);
             return accepted;
-        } catch (error) {
-            console.log(error);
+        } catch (e) {
             throw new InternalServerErrorException();
         }
     }

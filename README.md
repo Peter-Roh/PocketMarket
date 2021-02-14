@@ -4,7 +4,7 @@ Upgrading Pocket Market app...
 
 ## Tech Stack
 
-Tech: React, GraphQL, NestJS, PostgreSQL, TailwindCSS 
+Tech: React, GraphQL, NestJS, PostgreSQL, TypeORM, TailwindCSS 
 
 VCS: git
 

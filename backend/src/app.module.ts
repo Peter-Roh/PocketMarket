@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { GraphQLModule } from '@nestjs/graphql';
 import * as Joi from 'joi';
 import { User } from './users/entities/user.entity';
+import { Verification } from './users/entities/verification.entity';
 import { UsersModule } from './users/users.module';
 import { JwtModule } from './jwt/jwt.module';
 import { JwtMiddleware } from './jwt/jwt.middleware';
@@ -20,7 +21,7 @@ import { JwtMiddleware } from './jwt/jwt.middleware';
         DB_PORT: Joi.string().required(),
         DB_USERNAME: Joi.string().required(),
         DB_DATABASE: Joi.string().required(),
-        SESSION_KEY: Joi.string().required(),
+        PRIVATE_KEY: Joi.string().required(),
       })
     }),
     TypeOrmModule.forRoot({
@@ -31,14 +32,17 @@ import { JwtMiddleware } from './jwt/jwt.middleware';
       database: process.env.DB_DATABASE,
       synchronize: process.env.NODE_ENV !== 'prod', // typeorm이 database에 연결할 때 database를 현재 상태로 migrate
       logging: process.env.NODE_ENV !== 'prod',
-      entities: [User],
+      entities: [
+        User,
+        Verification,
+      ],
     }),
     GraphQLModule.forRoot({ // code first method 이용
       autoSchemaFile: true,
       context: ({ req }) => ({ user: req['user'] }),
     }),
     JwtModule.forRoot({
-      privateKey: process.env.SECRET_KEY,
+      privateKey: process.env.PRIVATE_KEY,
     }),
     UsersModule,
   ],

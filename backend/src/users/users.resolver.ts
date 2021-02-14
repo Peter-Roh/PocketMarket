@@ -8,6 +8,7 @@ import { LoginInput, LoginOutput } from './dtos/login.dto';
 import { CreateAccountInput, CreateAccountOutput } from './dtos/create-account.dto';
 import { UserProfileInput, UserProfileOutput } from './dtos/user-profile.dto';
 import { EditProfileInput, EditProfileOutput } from './dtos/edit-profile.dto';
+import { VerifyEmailInput, VerifyEmailOutput } from './dtos/verify-email.dto';
 
 @Resolver(of => User)
 export class UsersResolver {
@@ -15,53 +16,24 @@ export class UsersResolver {
 
     @Query(returns => User)
     @UseGuards(AuthGuard)
-    loggedinUser(@AuthUser() loggedinUser: User) {
+    loggedinUser(@AuthUser() loggedinUser: User): User {
         return loggedinUser;
     }
 
     @Mutation(returns => CreateAccountOutput)
     async createAccount(@Args("input") createAccountInput: CreateAccountInput): Promise<CreateAccountOutput> {
-        try {
-            return this.usersService.createAccount(createAccountInput);
-        } catch (error) {
-            return {
-                accepted: false,
-                error,
-            }
-        }
+        return this.usersService.createAccount(createAccountInput);
     }
 
     @Mutation(returns => LoginOutput)
     async login(@Args('input') loginInput: LoginInput): Promise<LoginOutput> {
-        try {
-            return this.usersService.login(loginInput);
-        } catch (error) {
-            return {
-                accepted: false,
-                error
-            };
-        }
+        return this.usersService.login(loginInput);
     }
 
     @UseGuards(AuthGuard)
     @Query(returns => UserProfileOutput)
     async userProfile(@Args() userProfileInput: UserProfileInput): Promise<UserProfileOutput> {
-        try {
-            const user = await this.usersService.findById(userProfileInput.userId);
-            if(!user) {
-                throw Error();
-            }
-
-            return {
-                accepted: true,
-                user,
-            }
-        } catch (error) {
-            return {
-                accepted: false,
-                error: "User Not Found",
-            }
-        }
+        return this.usersService.findById(userProfileInput.userId);
     }
 
     @UseGuards(AuthGuard)
@@ -70,16 +42,11 @@ export class UsersResolver {
         @AuthUser() authUser: User,
         @Args('input') editProfileInput: EditProfileInput
     ): Promise<EditProfileOutput> {
-        try {
-            await this.usersService.editProfile(authUser.id, editProfileInput);
-            return {
-                accepted: true
-            }
-        } catch (error) {
-            return {
-                accepted: false,
-                error
-            }
-        }
+        return this.usersService.editProfile(authUser.id, editProfileInput);
+    }
+
+    @Mutation(returns => VerifyEmailOutput)
+    verifyEmail(@Args('input') { code }: VerifyEmailInput): Promise<VerifyEmailOutput> {
+        return this.usersService.verifyEmail(code);
     }
 }
