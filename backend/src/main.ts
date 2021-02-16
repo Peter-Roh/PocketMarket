@@ -27,7 +27,7 @@ async function pocketmarket() {
     windowMs: 15 * 60 * 1000, // Timeframe for which requests are checked / remembered - 15 minutes
     max: 100, // limit each IP to 100 requests per windowMs
   }));
-  app.set('trust proxy', 1); // https://expressjs.com/en/guide/behind-proxies.html
+//  app.set('trust proxy', 1); // https://expressjs.com/en/guide/behind-proxies.html
   // may need to be configured to trust the headers set by the proxy in order to get the correct IP for the end user
   // when there is a load balancer or reverse proxy between the server and the internet
   app.use(compression()); // greatly decrease the size of the response body, thereby increasing the speed of a web app

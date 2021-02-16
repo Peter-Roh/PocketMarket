@@ -16,7 +16,7 @@ export class UsersResolver {
 
     @Query(returns => User)
     @UseGuards(AuthGuard)
-    loggedinUser(@AuthUser() loggedinUser: User): User {
+    loggedinUser(@AuthUser() loggedinUser: User) {
         return loggedinUser;
     }
 

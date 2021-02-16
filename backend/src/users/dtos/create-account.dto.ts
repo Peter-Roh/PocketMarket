@@ -4,14 +4,19 @@ import { User } from './../entities/user.entity';
 
 @InputType()
 export class CreateAccountInput extends IntersectionType(
-    PickType(User, [
+    PickType(User, [ // 필수 항목
         "email",
         "nickname",
         "password",
         "role",
         "gender",
         "birthday",
-]), PartialType(PickType(User, ["profileImg"]))) {}
+    ]), PartialType(
+        PickType(User, [ // optional
+            "profileImg"
+        ])
+    )
+) {}
 
 @ObjectType()
 export class CreateAccountOutput extends CoreDTO {}

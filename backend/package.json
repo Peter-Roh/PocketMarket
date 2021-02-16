@@ -39,6 +39,8 @@
     "cross-env": "^7.0.3",
     "express-rate-limit": "^5.2.3",
     "express-session": "^1.17.1",
+    "form-data": "^3.0.0",
+    "got": "^11.8.1",
     "graphql": "^15.5.0",
     "graphql-tools": "^7.0.2",
     "helmet": "^4.4.1",

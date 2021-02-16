@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { JwtService } from './../jwt/jwt.service';
+import { MailService } from './../mail/mail.service';
 import { Verification } from './entities/verification.entity';
 import { LoginInput, LoginOutput } from './dtos/login.dto';
 import { CreateAccountInput, CreateAccountOutput } from './dtos/create-account.dto';
@@ -16,6 +17,7 @@ export class UsersService {
         @InjectRepository(User) private readonly users: Repository<User>,
         @InjectRepository(Verification) private readonly verifications: Repository<Verification>,
         private readonly jwtService: JwtService,
+        private readonly mailService: MailService,
     ) {}
 
     async createAccount({ email, nickname, password, role, profileImg, gender, birthday }: CreateAccountInput): Promise<CreateAccountOutput> {
@@ -31,9 +33,10 @@ export class UsersService {
                 };
             }
             const user = await this.users.save(this.users.create({ email, nickname, password, role, profileImg, gender, birthday }));
-            await this.verifications.save(this.verifications.create({
+            const verification = await this.verifications.save(this.verifications.create({
                 user
             }));
+            this.mailService.sendVerificationEmail('Please Verify Your Email', 'email_confirmation_template', user.nickname, verification.code, user.email);
             return { accepted: true };
         } catch (e) {
             return { 
@@ -98,7 +101,8 @@ export class UsersService {
             if(email) {
                 user.email = email;
                 user.verified = false;
-                await this.verifications.save(this.verifications.create({ user }));
+                const verification = await this.verifications.save(this.verifications.create({ user }));
+                this.mailService.sendVerificationEmail('Please Verify Your Email', 'email_confirmation_template', user.nickname, verification.code, user.email);
             }
             if(password) {
                 user.password = password;
@@ -132,8 +136,8 @@ export class UsersService {
             const verification = await this.verifications.findOne({ code }, { relations: ['user'] });
             if(verification) {
                 verification.user.verified = true;
-                this.users.save(verification.user);
-                // await this.verifications.delete(verification.id);
+                await this.users.save(verification.user);
+                await this.verifications.delete(verification.id);
                 return {
                     accepted: true,
                 };
