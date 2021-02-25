@@ -2,7 +2,7 @@ import { Field, InputType, ObjectType, registerEnumType } from '@nestjs/graphql'
 import { CoreEntity } from './../../core/entities/core.entity';
 import { BeforeInsert, BeforeUpdate, Column, Entity } from 'typeorm';
 import { InternalServerErrorException } from '@nestjs/common';
-import { IsDate, IsEmail, IsEnum, IsString } from 'class-validator';
+import { IsBoolean, IsDate, IsEmail, IsEnum, IsString } from 'class-validator';
 import * as bcrypt from 'bcrypt';
 
 enum UserRole {
@@ -13,6 +13,8 @@ enum UserRole {
 enum SignupMethod {
     PocketMarket,
     Kakao,
+    Apple,
+    Google,
 }
 
 enum Gender {
@@ -37,6 +39,7 @@ export class User extends CoreEntity {
 
     @Column({ default: false })
     @Field(is => Boolean)
+    @IsBoolean()
     verified: boolean;
 
     @Column()
@@ -61,6 +64,7 @@ export class User extends CoreEntity {
 
     @Column({ nullable: true })
     @Field(is => String)
+    @IsString()
     profileImg?: string;
 
     @Column({ type: 'enum', enum: Gender, default: Gender.Unknown })

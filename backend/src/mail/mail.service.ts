@@ -9,8 +9,8 @@ export class MailService {
     constructor(
         @Inject(CONFIG_OPTIONS) private readonly options: IMailModuleOptions
     ) {}
-    
-    private async sendEmail(subject: string, template: string, emailVars: IEmailVar[], to: string) {
+
+    async sendEmail(subject: string, template: string, emailVars: IEmailVar[], to: string): Promise<boolean> {
         const form = new FormData();
         form.append('from', `from Pocket Market <minchul@${this.options.domain}>`);
         form.append('to', to);
@@ -19,17 +19,19 @@ export class MailService {
         emailVars.forEach(eVar => form.append(`v:${eVar.key}`, eVar.value));
 
         try {
-            await got(`https://api.mailgun.net/v3/${this.options.domain}/messages`, {
+            await got.post(`https://api.mailgun.net/v3/${this.options.domain}/messages`, {
                 headers: {
                     Authorization: `Basic ${Buffer.from(
                         `api:${this.options.apiKey}`,
                         ).toString("base64")}`,
                     },
                     body: form,
-                    method: 'POST',
                 }
             );
-        } catch(e) {}
+            return true;
+        } catch(e) {
+            return false;
+        }
     }
     // 제목, template 이름, 유저 이름, 코드, 유저 메일
     sendVerificationEmail(subject: string, template: string, username: string, code: string, to: string) {

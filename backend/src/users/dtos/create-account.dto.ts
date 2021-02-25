@@ -3,7 +3,7 @@ import { CoreDTO } from './../../core/dtos/core.dto';
 import { User } from './../entities/user.entity';
 
 @InputType()
-export class CreateAccountInput extends IntersectionType(
+export class CreateAccountInput extends PickType(IntersectionType(
     PickType(User, [ // 필수 항목
         "email",
         "nickname",
@@ -16,7 +16,15 @@ export class CreateAccountInput extends IntersectionType(
             "profileImg"
         ])
     )
-) {}
+), [
+    "email",
+    "nickname",
+    "password",
+    "role",
+    "gender",
+    "birthday",
+    "profileImg"
+]) {}
 
 @ObjectType()
 export class CreateAccountOutput extends CoreDTO {}

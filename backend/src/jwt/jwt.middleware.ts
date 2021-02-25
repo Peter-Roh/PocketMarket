@@ -6,7 +6,7 @@ import { JwtService } from './jwt.service';
 @Injectable()
 export class JwtMiddleware implements NestMiddleware {
     constructor(
-        private readonly jwtService: JwtService, 
+        private readonly jwtService: JwtService,
         private readonly usersService: UsersService,
     ) {}
 

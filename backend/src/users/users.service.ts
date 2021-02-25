@@ -26,7 +26,7 @@ export class UsersService {
         try {
             const exists = await this.users.findOne({ email });
             if(exists) {
-                // make error 
+                // make error
                 return {
                     accepted: false,
                     error: 'User exists with the email already'
@@ -48,13 +48,11 @@ export class UsersService {
 
     async findById(id: number): Promise<UserProfileOutput> {
         try {
-            const user = await this.users.findOne({ id });
-            if(user) {
-                return {
-                    accepted: true,
-                    user
-                };
-            }
+            const user = await this.users.findOneOrFail({ id });
+            return {
+                accepted: true,
+                user
+            };
         } catch (error) {
             return {
                 accepted: false,
@@ -144,12 +142,12 @@ export class UsersService {
             }
             return {
                 accepted: false,
-                error: 'Verification failed',
+                error: 'Verification Not Found',
             };
         } catch (error) {
             return {
                 accepted: false,
-                error,
+                error: 'Could not verify email',
             };
         }
     }
