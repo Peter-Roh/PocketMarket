@@ -5,10 +5,16 @@ import { GraphQLModule } from '@nestjs/graphql';
 import * as Joi from 'joi';
 import { User } from './users/entities/user.entity';
 import { Verification } from './users/entities/verification.entity';
+import { Company } from './restaurants/entities/company.entity';
+import { Brand } from './restaurants/entities/brand.entity';
+import { Restaurant } from './restaurants/entities/restaurant.entity';
+import { Keymap } from './restaurants/entities/keymap.entity';
+import { Touchgroup } from './restaurants/entities/touchgroup.entity';
 import { UsersModule } from './users/users.module';
 import { JwtModule } from './jwt/jwt.module';
 import { JwtMiddleware } from './jwt/jwt.middleware';
 import { MailModule } from './mail/mail.module';
+import { RestaurantsModule } from './restaurants/restaurants.module';
 
 @Module({
   imports: [
@@ -39,6 +45,11 @@ import { MailModule } from './mail/mail.module';
       entities: [
         User,
         Verification,
+        Company,
+        Brand,
+        Restaurant,
+        Keymap,
+        Touchgroup,
       ],
     }),
     GraphQLModule.forRoot({ // code first method 이용
@@ -54,6 +65,7 @@ import { MailModule } from './mail/mail.module';
       fromEmail: process.env.MAILGUN_FROM_EMAIL,
     }),
     UsersModule,
+    RestaurantsModule,
   ],
   controllers: [],
   providers: [],
