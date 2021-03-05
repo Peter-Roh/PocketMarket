@@ -99,6 +99,11 @@ export class UsersService {
             if(email) {
                 user.email = email;
                 user.verified = false;
+                await this.verifications.delete({
+                    user: {
+                        id: user.id
+                    }
+                });
                 const verification = await this.verifications.save(this.verifications.create({ user }));
                 this.mailService.sendVerificationEmail('Please Verify Your Email', 'email_confirmation_template', user.nickname, verification.code, user.email);
             }
@@ -108,13 +113,13 @@ export class UsersService {
             if(nickname) {
                 user.nickname = nickname;
             }
-            if(role) {
+            if(role !== undefined) {
                 user.role = role;
             }
             if(profileImg) {
                 user.profileImg = profileImg;
             }
-            if(gender) {
+            if(gender !== undefined) { // enum의 경우 처음꺼가 0이면 if문 통과 못함
                 user.gender = gender;
             }
             await this.users.save(user);

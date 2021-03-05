@@ -13,8 +13,8 @@ enum UserRole {
 enum SignupMethod {
     PocketMarket,
     Kakao,
-    Apple,
     Google,
+//    Apple,
 }
 
 enum Gender {

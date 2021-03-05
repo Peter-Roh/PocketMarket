@@ -312,7 +312,7 @@ describe("UsersService", () => {
             const editProfileArgs = {
                 userId: 1,
                 input: {
-                    gender: 1,
+                    gender: 0,
                 }
             };
 

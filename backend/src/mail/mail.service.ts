@@ -33,6 +33,7 @@ export class MailService {
             return false;
         }
     }
+
     // 제목, template 이름, 유저 이름, 코드, 유저 메일
     sendVerificationEmail(subject: string, template: string, username: string, code: string, to: string) {
         this.sendEmail(subject, template, [
