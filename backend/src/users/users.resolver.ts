@@ -1,21 +1,20 @@
 import { Args, Mutation, Query, Resolver } from "@nestjs/graphql";
-import { UseGuards } from '@nestjs/common';
 import { User } from './entities/user.entity';
 import { UsersService } from './users.service';
-import { AuthGuard } from './../auth/auth.guard';
 import { AuthUser } from './../auth/auth-user.decorator';
 import { LoginInput, LoginOutput } from './dtos/login.dto';
 import { CreateAccountInput, CreateAccountOutput } from './dtos/create-account.dto';
 import { UserProfileInput, UserProfileOutput } from './dtos/user-profile.dto';
 import { EditProfileInput, EditProfileOutput } from './dtos/edit-profile.dto';
 import { VerifyEmailInput, VerifyEmailOutput } from './dtos/verify-email.dto';
+import { Role } from "src/auth/role.decorator";
 
 @Resolver(of => User)
 export class UsersResolver {
     constructor(private readonly usersService: UsersService) {}
 
     @Query(returns => User)
-    @UseGuards(AuthGuard)
+    @Role(["Any"])
     loggedinUser(@AuthUser() loggedinUser: User) {
         return loggedinUser;
     }
@@ -30,13 +29,13 @@ export class UsersResolver {
         return this.usersService.login(loginInput);
     }
 
-    @UseGuards(AuthGuard)
+    @Role(["Any"])
     @Query(returns => UserProfileOutput)
     async userProfile(@Args() userProfileInput: UserProfileInput): Promise<UserProfileOutput> {
         return this.usersService.findById(userProfileInput.userId);
     }
 
-    @UseGuards(AuthGuard)
+    @Role(["Any"])
     @Mutation(returns => EditProfileOutput)
     async editProfile(
         @AuthUser() authUser: User,

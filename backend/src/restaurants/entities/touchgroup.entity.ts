@@ -1,9 +1,12 @@
 import { Field, InputType, ObjectType } from '@nestjs/graphql';
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany, RelationId } from 'typeorm';
 import { CoreEntity } from './../../core/entities/core.entity';
 import { IsString } from 'class-validator';
+import { User } from './../../users/entities/user.entity';
+import { Keymap } from './keymap.entity';
+import { Item } from './item.entity';
 
-@InputType({ isAbstract: true })
+@InputType("TouchgroupInputType", { isAbstract: true })
 @ObjectType()
 @Entity()
 export class Touchgroup extends CoreEntity {
@@ -11,4 +14,31 @@ export class Touchgroup extends CoreEntity {
     @Column()
     @IsString()
     name: string;
+
+    @Field(is => Keymap)
+    @ManyToOne(
+        type => Keymap,
+        keymap => keymap.touchgroups,
+        { onDelete: 'CASCADE' }
+    )
+    keymap: Keymap;
+
+    @Field(is => User)
+    @ManyToOne(
+        type => User,
+        user => user.touchgroups,
+        { onDelete: 'CASCADE' }
+    )
+    owner: User;
+
+    @RelationId((touchgroup: Touchgroup) => touchgroup.owner)
+    ownerId: number;
+
+    @Field(is => [Item], { nullable: true })
+    @OneToMany(
+        type => Item,
+        item => item.touchgroup,
+        { nullable: true, onDelete: 'SET NULL' }
+    )
+    items?: Item[];
 }

@@ -10,6 +10,9 @@ import { Brand } from './restaurants/entities/brand.entity';
 import { Restaurant } from './restaurants/entities/restaurant.entity';
 import { Keymap } from './restaurants/entities/keymap.entity';
 import { Touchgroup } from './restaurants/entities/touchgroup.entity';
+import { Item } from './restaurants/entities/item.entity';
+import { Option } from './restaurants/entities/option.entity';
+import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { JwtModule } from './jwt/jwt.module';
 import { JwtMiddleware } from './jwt/jwt.middleware';
@@ -50,6 +53,8 @@ import { RestaurantsModule } from './restaurants/restaurants.module';
         Restaurant,
         Keymap,
         Touchgroup,
+        Item,
+        Option
       ],
     }),
     GraphQLModule.forRoot({ // code first method 이용
@@ -64,6 +69,7 @@ import { RestaurantsModule } from './restaurants/restaurants.module';
       domain: process.env.MAILGUN_DOMAIN_NAME,
       fromEmail: process.env.MAILGUN_FROM_EMAIL,
     }),
+    AuthModule,
     UsersModule,
     RestaurantsModule,
   ],
