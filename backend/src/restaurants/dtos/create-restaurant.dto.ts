@@ -7,6 +7,7 @@ import { Touchgroup } from './../entities/touchgroup.entity';
 import { Item } from './../entities/item.entity';
 import { Option } from './../entities/option.entity';
 import { CoreDTO } from './../../core/dtos/core.dto';
+import { IsNumber } from "class-validator";
 
 // Company
 
@@ -25,6 +26,7 @@ export class CreateBrandInput extends PickType(Brand, [
     "name",
 ]) {
     @Field(is => Number)
+    @IsNumber()
     companyId: number;
 }
 
@@ -42,6 +44,7 @@ export class CreateRestaurantInput extends PickType(Restaurant, [
     "description",
 ]) {
     @Field(is => Number)
+    @IsNumber()
     brandId: number;
 }
 
@@ -55,6 +58,7 @@ export class CreateKeymapInput extends PickType(Keymap, [
     "name",
 ]) {
     @Field(is => Number)
+    @IsNumber()
     restaurantId: number;
 }
 
@@ -68,6 +72,7 @@ export class CreateTouchgroupInput extends PickType(Touchgroup, [
     "name",
 ]) {
     @Field(is => Number)
+    @IsNumber()
     keymapId: number;
 }
 
@@ -83,6 +88,7 @@ export class CreateItemInput extends PickType(Item, [
     "price",
 ]) {
     @Field(is => Number)
+    @IsNumber()
     touchgroupId: number;
 }
 
@@ -97,6 +103,7 @@ export class CreateOptionInput extends PickType(Option, [
     "price",
 ]) {
     @Field(is => Number)
+    @IsNumber()
     itemId: number;
 }
 

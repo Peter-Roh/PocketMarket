@@ -29,14 +29,14 @@ export class UsersResolver {
         return this.usersService.login(loginInput);
     }
 
-    @Role(["Any"])
     @Query(returns => UserProfileOutput)
+    @Role(["Any"])
     async userProfile(@Args() userProfileInput: UserProfileInput): Promise<UserProfileOutput> {
         return this.usersService.findById(userProfileInput.userId);
     }
 
-    @Role(["Any"])
     @Mutation(returns => EditProfileOutput)
+    @Role(["Any"])
     async editProfile(
         @AuthUser() authUser: User,
         @Args('input') editProfileInput: EditProfileInput

@@ -1,4 +1,5 @@
 import { Field, InputType, ObjectType } from "@nestjs/graphql";
+import { IsNumber } from "class-validator";
 import { CoreDTO } from './../../core/dtos/core.dto';
 
 // Company
@@ -6,6 +7,7 @@ import { CoreDTO } from './../../core/dtos/core.dto';
 @InputType()
 export class DeleteCompanyInput {
     @Field(is => Number)
+    @IsNumber()
     companyId: number;
 }
 
@@ -17,6 +19,7 @@ export class DeleteCompanyOutput extends CoreDTO {}
 @InputType()
 export class DeleteBrandInput {
     @Field(is => Number)
+    @IsNumber()
     brandId: number;
 }
 
@@ -28,6 +31,7 @@ export class DeleteBrandOutput extends CoreDTO {}
 @InputType()
 export class DeleteRestaurantInput {
     @Field(is => Number)
+    @IsNumber()
     restaurantId: number;
 }
 
@@ -39,6 +43,7 @@ export class DeleteRestaurantOutput extends CoreDTO {}
 @InputType()
 export class DeleteKeymapInput {
     @Field(is => Number)
+    @IsNumber()
     keymapId: number;
 }
 
@@ -50,6 +55,7 @@ export class DeleteKeymapOutput extends CoreDTO {}
 @InputType()
 export class DeleteTouchgroupInput {
     @Field(is => Number)
+    @IsNumber()
     touchgroupId: number;
 }
 
@@ -61,6 +67,7 @@ export class DeleteTouchgroupOutput extends CoreDTO {}
 @InputType()
 export class DeleteItemInput {
     @Field(is => Number)
+    @IsNumber()
     itemId: number;
 }
 
@@ -72,6 +79,7 @@ export class DeleteItemOutput extends CoreDTO {}
 @InputType()
 export class DeleteOptionInput {
     @Field(is => Number)
+    @IsNumber()
     optionId: number;
 }
 

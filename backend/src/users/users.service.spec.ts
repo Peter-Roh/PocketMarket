@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { UsersService } from './users.service';
 import { JwtService } from './../jwt/jwt.service';
 import { MailService } from './../mail/mail.service';
-import { User } from './entities/user.entity';
+import { User, UserRole } from './entities/user.entity';
 import { Verification } from './entities/verification.entity';
 
 const mockRepository = () => ({
@@ -73,9 +73,10 @@ describe("UsersService", () => {
             email: "test@email.com",
             nickname: "test",
             password: "test",
-            role: 0,
+            role: UserRole.Client,
             profileImg: "",
             gender: 0,
+            phoneNumber: "01012345678",
             birthday: date,
         };
 
@@ -278,7 +279,7 @@ describe("UsersService", () => {
             const editProfileArgs = {
                 userId: 1,
                 input: {
-                    role: 1,
+                    role: UserRole.Owner,
                 }
             };
 

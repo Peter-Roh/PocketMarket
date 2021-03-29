@@ -28,6 +28,7 @@ export class Option extends CoreEntity {
     owner: User;
 
     @RelationId((option: Option) => option.owner)
+    @IsNumber()
     ownerId: number;
 
     @Field(is => Item)

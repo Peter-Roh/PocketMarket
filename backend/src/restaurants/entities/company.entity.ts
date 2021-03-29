@@ -1,7 +1,7 @@
 import { Field, InputType, ObjectType } from '@nestjs/graphql';
 import { Column, Entity, ManyToOne, OneToMany, RelationId } from 'typeorm';
 import { CoreEntity } from './../../core/entities/core.entity';
-import { IsString } from 'class-validator';
+import { IsNumber, IsString } from 'class-validator';
 import { User } from './../../users/entities/user.entity';
 import { Brand } from './brand.entity';
 
@@ -23,6 +23,7 @@ export class Company extends CoreEntity {
     owner: User;
 
     @RelationId((company: Company) => company.owner)
+    @IsNumber()
     ownerId: number;
 
     @Field(is => [Brand], { nullable: true })

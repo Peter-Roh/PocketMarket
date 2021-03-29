@@ -24,7 +24,7 @@ async function pocketmarket() {
     cookie: { secure: true },
   }));
   app.use(rateLimit({
-    windowMs: 15 * 60 * 1000, // Timeframe for which requests are checked / remembered - 15 minutes
+    windowMs: 1 * 60 * 1000, // Timeframe for which requests are checked / remembered - 1 minutes
     max: 100, // limit each IP to 100 requests per windowMs
   }));
 //  app.set('trust proxy', 1); // https://expressjs.com/en/guide/behind-proxies.html

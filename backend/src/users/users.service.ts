@@ -20,7 +20,7 @@ export class UsersService {
         private readonly mailService: MailService,
     ) {}
 
-    async createAccount({ email, nickname, password, role, profileImg, gender, birthday }: CreateAccountInput): Promise<CreateAccountOutput> {
+    async createAccount({ email, nickname, password, role, profileImg, gender, birthday, phoneNumber }: CreateAccountInput): Promise<CreateAccountOutput> {
         // check new user 
         // create user & hash the password 
         try {
@@ -32,7 +32,7 @@ export class UsersService {
                     error: 'User exists with the email already'
                 };
             }
-            const user = await this.users.save(this.users.create({ email, nickname, password, role, profileImg, gender, birthday }));
+            const user = await this.users.save(this.users.create({ email, nickname, password, role, profileImg, gender, birthday, phoneNumber }));
             const verification = await this.verifications.save(this.verifications.create({
                 user
             }));
@@ -51,7 +51,7 @@ export class UsersService {
             const user = await this.users.findOneOrFail({ id });
             return {
                 accepted: true,
-                user
+                user,
             };
         } catch (error) {
             return {

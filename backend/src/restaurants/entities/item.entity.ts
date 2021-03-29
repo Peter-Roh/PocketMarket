@@ -47,6 +47,7 @@ export class Item extends CoreEntity {
     owner: User;
 
     @RelationId((item: Item) => item.owner)
+    @IsNumber()
     ownerId: number;
 
     @Field(is => [Option], { nullable: true })

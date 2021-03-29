@@ -1,4 +1,5 @@
-import { Field, InputType, ObjectType, PartialType, PickType } from "@nestjs/graphql";
+import { Field, InputType, Int, ObjectType, PartialType, PickType } from "@nestjs/graphql";
+import { IsNumber } from "class-validator";
 import { Company } from './../entities/company.entity';
 import { Brand } from './../entities/brand.entity';
 import { Restaurant } from './../entities/restaurant.entity';
@@ -18,7 +19,8 @@ export class EditCompanyInput extends PartialType(
         ]
     )
 ) {
-    @Field(is => Number)
+    @Field(is => Int)
+    @IsNumber()
     companyId: number;
 }
 
@@ -35,7 +37,8 @@ export class EditBrandInput extends PartialType(
         ]
     )
 ) {
-    @Field(is => Number)
+    @Field(is => Int)
+    @IsNumber()
     brandId: number;
 }
 
@@ -57,7 +60,8 @@ export class EditRestaurantInput extends PartialType(
         ]
     )
 ) {
-    @Field(is => Number)
+    @Field(is => Int)
+    @IsNumber()
     restaurantId: number;
 }
 
@@ -74,7 +78,8 @@ export class EditKeymapInput extends PartialType(
         ]
     )
 ) {
-    @Field(is => Number)
+    @Field(is => Int)
+    @IsNumber()
     keymapId: number;
 }
 
@@ -91,7 +96,8 @@ export class EditTouchgroupInput extends PartialType(
         ]
     )
 ) {
-    @Field(is => Number)
+    @Field(is => Int)
+    @IsNumber()
     touchgroupId: number;
 }
 
@@ -111,7 +117,8 @@ export class EditItemInput extends PartialType(
         ]
     )
 ) {
-    @Field(is => Number)
+    @Field(is => Int)
+    @IsNumber()
     itemId: number;
 }
 
@@ -129,7 +136,8 @@ export class EditOptionInput extends PartialType(
         ]
     )
 ) {
-    @Field(is => Number)
+    @Field(is => Int)
+    @IsNumber()
     optionId: number;
 }
 

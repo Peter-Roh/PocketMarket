@@ -80,6 +80,9 @@ export class RestaurantsService {
     ) {}
 
     // create
+    // input 받아서 대상 생성
+    // 정보 저장
+    // save
 
     async createCompany(
         owner: User,
@@ -87,12 +90,6 @@ export class RestaurantsService {
     ): Promise<CreateCompanyOutput> {
         try {
             const newCompany = this.companies.create(createCompanyInput);
-            if(owner.id !== newCompany.ownerId) {
-                return {
-                    accepted: false,
-                    error: "Authorization failed"
-                };
-            }
             newCompany.owner = owner;
             await this.companies.save(newCompany);
             return {
@@ -112,12 +109,6 @@ export class RestaurantsService {
     ): Promise<CreateBrandOutput> {
         try {
             const newBrand = this.brands.create(createBrandInput);
-            if(owner.id !== newBrand.ownerId) {
-                return {
-                    accepted: false,
-                    error: "Authorization failed"
-                };
-            }
             newBrand.owner = owner;
             const company = await this.companies.findOne(
                 createBrandInput.companyId, 
@@ -148,12 +139,6 @@ export class RestaurantsService {
     ): Promise<CreateRestaurantOutput> {
         try {
             const newRestaurant = this.restaurants.create(createRestaurantInput);
-            if(owner.id !== newRestaurant.ownerId) {
-                return {
-                    accepted: false,
-                    error: "Authorization failed"
-                };
-            }
             newRestaurant.owner = owner;
             const brand = await this.brands.findOne(
                 createRestaurantInput.brandId,
@@ -184,12 +169,6 @@ export class RestaurantsService {
     ): Promise<CreateKeymapOutput> {
         try {
             const newKeymap = this.keymaps.create(createKeymapInput);
-            if(owner.id !== newKeymap.ownerId) {
-                return {
-                    accepted: false,
-                    error: "Authorization failed"
-                };
-            }
             newKeymap.owner = owner;
             const restaurant = await this.restaurants.findOne(
                 createKeymapInput.restaurantId,
@@ -220,12 +199,6 @@ export class RestaurantsService {
     ): Promise<CreateTouchgroupOutput> {
         try {
             const newTouchgroup = this.touchgroups.create(createTouchgroupInput);
-            if(owner.id !== newTouchgroup.ownerId) {
-                return {
-                    accepted: false,
-                    error: "Authorization failed"
-                };
-            }
             newTouchgroup.owner = owner;
             const keymap = await this.keymaps.findOne(
                 createTouchgroupInput.keymapId,
@@ -255,12 +228,6 @@ export class RestaurantsService {
     ): Promise<CreateItemOutput> {
         try {
             const newItem = this.items.create(createItemInput);
-            if(owner.id !== newItem.ownerId) {
-                return {
-                    accepted: false,
-                    error: "Authorization failed"
-                };
-            }
             newItem.owner = owner;
             const touchgroup = await this.touchgroups.findOne(
                 createItemInput.touchgroupId,
@@ -291,12 +258,6 @@ export class RestaurantsService {
     ): Promise<CreateOptionOutput> {
         try {
             const newOption = this.options.create(createOptionInput);
-            if(owner.id !== newOption.ownerId) {
-                return {
-                    accepted: false,
-                    error: "Authorization failed"
-                };
-            }
             newOption.owner = owner;
             const item = await this.items.findOne(
                 createOptionInput.itemId,
@@ -322,6 +283,9 @@ export class RestaurantsService {
     }
 
     // edit
+    // id 받아서 대상 찾기
+    // 수정 권한 확인
+    // 수정된 정보 저장
 
     async editCompany(
         owner: User,
@@ -348,6 +312,9 @@ export class RestaurantsService {
                 id: editCompanyInput.companyId,
                 ...editCompanyInput,
             }]);
+            return {
+                accepted: true,
+            };
         } catch (e) {
             return {
                 accepted: false,
@@ -381,6 +348,9 @@ export class RestaurantsService {
                 id: editBrandInput.brandId,
                 ...editBrandInput,
             }]);
+            return {
+                accepted: true,
+            };
         } catch (e) {
             return {
                 accepted: false,
@@ -414,6 +384,9 @@ export class RestaurantsService {
                 id: editRestaurantInput.restaurantId,
                 ...editRestaurantInput,
             }]);
+            return {
+                accepted: true,
+            };
         } catch (e) {
             return {
                 accepted: false,
@@ -447,6 +420,9 @@ export class RestaurantsService {
                 id: editKeymapInput.keymapId,
                 ...editKeymapInput,
             }]);
+            return {
+                accepted: true,
+            };
         } catch (e) {
             return {
                 accepted: false,
@@ -480,6 +456,9 @@ export class RestaurantsService {
                 id: editTouchgroupInput.touchgroupId,
                 ...editTouchgroupInput,
             }]);
+            return {
+                accepted: true,
+            };
         } catch (e) {
             return {
                 accepted: false,
@@ -513,6 +492,9 @@ export class RestaurantsService {
                 id: editItemInput.itemId,
                 ...editItemInput,
             }]);
+            return {
+                accepted: true,
+            };
         } catch (e) {
             return {
                 accepted: false,
@@ -546,6 +528,9 @@ export class RestaurantsService {
                 id: editOptionInput.optionId,
                 ...editOptionInput,
             }]);
+            return {
+                accepted: true,
+            };
         } catch (e) {
             return {
                 accepted: false,
@@ -554,6 +539,9 @@ export class RestaurantsService {
         }
     }
 
+    // delete
+    // id 받아서 대상 찾기
+    // 삭제 권한 확인
     // delete
 
     async deleteCompany(
@@ -784,7 +772,9 @@ export class RestaurantsService {
 
     async getCompanies(): Promise<FindCompaniesOutput> {
         try {
-            const companies = await this.companies.find();
+            const companies = await this.companies.find({
+                relations: ['owner']
+            });
             return {
                 accepted: true,
                 companies,
@@ -799,7 +789,9 @@ export class RestaurantsService {
 
     async getBrands(): Promise<FindBrandsOutput> {
         try {
-            const brands = await this.brands.find();
+            const brands = await this.brands.find({
+                relations: ['owner']
+            });
             return {
                 accepted: true,
                 brands,
@@ -814,7 +806,9 @@ export class RestaurantsService {
 
     async getRestaurants(): Promise<FindRestaurantsOutput> {
         try {
-            const restaurants = await this.restaurants.find();
+            const restaurants = await this.restaurants.find({
+                relations: ['owner']
+            });
             return {
                 accepted: true,
                 restaurants,
@@ -829,7 +823,9 @@ export class RestaurantsService {
 
     async getKeymaps(): Promise<FindKeymapsOutput> {
         try {
-            const keymaps = await this.keymaps.find();
+            const keymaps = await this.keymaps.find({
+                relations: ['owner']
+            });
             return {
                 accepted: true,
                 keymaps,
@@ -844,7 +840,9 @@ export class RestaurantsService {
 
     async getTouchgroups(): Promise<FindTouchgroupsOutput> {
         try {
-            const touchgroups = await this.touchgroups.find();
+            const touchgroups = await this.touchgroups.find({
+                relations: ['owner']
+            });
             return {
                 accepted: true,
                 touchgroups,
@@ -859,7 +857,9 @@ export class RestaurantsService {
 
     async getItems(): Promise<FindItemsOutput> {
         try {
-            const items = await this.items.find();
+            const items = await this.items.find({
+                relations: ['owner']
+            });
             return {
                 accepted: true,
                 items,
@@ -874,7 +874,9 @@ export class RestaurantsService {
 
     async getOptions(): Promise<FindOptionsOutput> {
         try {
-            const options = await this.options.find();
+            const options = await this.options.find({
+                relations: ['owner']
+            });
             return {
                 accepted: true,
                 options,
@@ -885,5 +887,35 @@ export class RestaurantsService {
                 error: "Could not load options",
             };
         }
+    }
+
+    // count
+
+    async countCompanies(): Promise<number> {
+        return this.companies.count();
+    }
+
+    async countBrands(): Promise<number> {
+        return this.brands.count();
+    }
+
+    async countRestaurants(): Promise<number> {
+        return this.restaurants.count();
+    }
+
+    async countKeymaps(): Promise<number> {
+        return this.keymaps.count();
+    }
+
+    async countTouchgroups(): Promise<number> {
+        return this.touchgroups.count();
+    }
+
+    async countItems(): Promise<number> {
+        return this.items.count();
+    }
+
+    async countOptions(): Promise<number> {
+        return this.options.count();
     }
 }

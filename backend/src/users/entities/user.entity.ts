@@ -2,7 +2,7 @@ import { Field, InputType, ObjectType, registerEnumType } from '@nestjs/graphql'
 import { CoreEntity } from './../../core/entities/core.entity';
 import { BeforeInsert, BeforeUpdate, Column, Entity, ManyToMany, OneToMany } from 'typeorm';
 import { InternalServerErrorException } from '@nestjs/common';
-import { IsBoolean, IsDate, IsEmail, IsEnum, IsPhoneNumber, IsString } from 'class-validator';
+import { IsBoolean, IsDate, IsEmail, IsEnum, IsString } from 'class-validator';
 import { Company } from './../../restaurants/entities/company.entity';
 import { Brand } from './../../restaurants/entities/brand.entity';
 import { Restaurant } from './../../restaurants/entities/restaurant.entity';
@@ -84,9 +84,9 @@ export class User extends CoreEntity {
     @IsDate()
     birthday: Date;
 
-    @Field(is => String)
     @Column()
-    @IsPhoneNumber('KR')
+    @Field(is => String)
+    @IsString()
     phoneNumber: string;
 
     @Field(is => [Company], { nullable: true })

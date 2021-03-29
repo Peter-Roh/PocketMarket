@@ -1,4 +1,4 @@
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import { Args, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Restaurant } from './entities/restaurant.entity';
 import { RestaurantsService } from './restaurants.service';
 import { User } from './../users/entities/user.entity';
@@ -296,5 +296,42 @@ export class RestaurantsResolver {
     @Query(returns => FindOptionsOutput)
     getOptions(): Promise<FindOptionsOutput> {
         return this.restaurantsService.getOptions();
+    }
+
+    // count
+
+    @Query(returns => Int)
+    countCompanies(): Promise<number> {
+        return this.restaurantsService.countCompanies();
+    }
+
+    @Query(returns => Int)
+    countBrands(): Promise<number> {
+        return this.restaurantsService.countBrands();
+    }
+
+    @Query(returns => Int)
+    countRestaurants(): Promise<number> {
+        return this.restaurantsService.countRestaurants();
+    }
+
+    @Query(returns => Int)
+    countKeymaps(): Promise<number> {
+        return this.restaurantsService.countKeymaps();
+    }
+
+    @Query(returns => Int)
+    countTouchgroups(): Promise<number> {
+        return this.restaurantsService.countTouchgroups();
+    }
+
+    @Query(returns => Int)
+    countItems(): Promise<number> {
+        return this.restaurantsService.countItems();
+    }
+
+    @Query(returns => Int)
+    countOptions(): Promise<number> {
+        return this.restaurantsService.countOptions();
     }
 }

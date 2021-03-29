@@ -1,7 +1,7 @@
 import { Field, InputType, ObjectType } from '@nestjs/graphql';
 import { Column, Entity, ManyToOne, OneToMany, RelationId } from 'typeorm';
 import { CoreEntity } from './../../core/entities/core.entity';
-import { IsString } from 'class-validator';
+import { IsNumber, IsString } from 'class-validator';
 import { User } from './../../users/entities/user.entity';
 import { Keymap } from './keymap.entity';
 import { Item } from './item.entity';
@@ -32,6 +32,7 @@ export class Touchgroup extends CoreEntity {
     owner: User;
 
     @RelationId((touchgroup: Touchgroup) => touchgroup.owner)
+    @IsNumber()
     ownerId: number;
 
     @Field(is => [Item], { nullable: true })

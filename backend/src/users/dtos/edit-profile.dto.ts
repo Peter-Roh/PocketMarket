@@ -10,6 +10,7 @@ export class EditProfileInput extends PartialType(
         "nickname",
         "role",
         "profileImg",
+        "phoneNumber",
         "gender",
     ]),
 ) {}

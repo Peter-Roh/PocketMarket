@@ -11,6 +11,7 @@ export class CreateAccountInput extends PickType(IntersectionType(
         "role",
         "gender",
         "birthday",
+        "phoneNumber",
     ]), PartialType(
         PickType(User, [ // optional
             "profileImg"
@@ -23,6 +24,7 @@ export class CreateAccountInput extends PickType(IntersectionType(
     "role",
     "gender",
     "birthday",
+    "phoneNumber",
     "profileImg"
 ]) {}
 
