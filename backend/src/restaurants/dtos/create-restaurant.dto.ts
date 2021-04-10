@@ -100,7 +100,7 @@ export class CreateItemOutput extends CoreDTO {}
 @InputType()
 export class CreateOptionInput extends PickType(Option, [
     "name",
-    "price",
+    "choices",
 ]) {
     @Field(is => Number)
     @IsNumber()

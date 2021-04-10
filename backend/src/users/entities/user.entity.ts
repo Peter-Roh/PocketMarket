@@ -10,6 +10,7 @@ import { Keymap } from './../../restaurants/entities/keymap.entity';
 import { Touchgroup } from './../../restaurants/entities/touchgroup.entity';
 import { Item } from './../../restaurants/entities/item.entity';
 import { Option } from './../../restaurants/entities/option.entity';
+import { Order } from './../../orders/entities/order.entity';
 import * as bcrypt from 'bcrypt';
 
 export enum UserRole {
@@ -152,6 +153,14 @@ export class User extends CoreEntity {
         { nullable: true, onDelete: 'SET NULL' }
     )
     options?: Option[];
+
+    @Field(is => [Order], { nullable: true })
+    @OneToMany(
+        is => Order,
+        order => order.customer,
+        { nullable: true, onDelete: 'SET NULL' }
+    )
+    orders?: Order[];
 
     // 게시물 좋아요
 

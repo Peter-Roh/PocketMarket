@@ -12,12 +12,15 @@ import { Keymap } from './restaurants/entities/keymap.entity';
 import { Touchgroup } from './restaurants/entities/touchgroup.entity';
 import { Item } from './restaurants/entities/item.entity';
 import { Option } from './restaurants/entities/option.entity';
+import { Order } from './orders/entities/order.entity';
+import { OrderMenu } from './orders/entities/order-menu.entity';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { JwtModule } from './jwt/jwt.module';
 import { JwtMiddleware } from './jwt/jwt.middleware';
 import { MailModule } from './mail/mail.module';
 import { RestaurantsModule } from './restaurants/restaurants.module';
+import { OrdersModule } from './orders/orders.module';
 
 @Module({
   imports: [
@@ -54,12 +57,19 @@ import { RestaurantsModule } from './restaurants/restaurants.module';
         Keymap,
         Touchgroup,
         Item,
-        Option
+        Option,
+        Order,
+        OrderMenu,
       ],
     }),
     GraphQLModule.forRoot({ // code first method 이용
+      installSubscriptionHandlers: true, // enable websocket protocol for subscription
       autoSchemaFile: true,
-      context: ({ req }) => ({ user: req['user'] }),
+      context: ({ req, connection }) => {
+        return {
+          token: req ? req.headers['x-jwt'] : connection.context['x-jwt'],
+        };
+      },
     }),
     JwtModule.forRoot({
       privateKey: process.env.PRIVATE_KEY,
@@ -72,15 +82,9 @@ import { RestaurantsModule } from './restaurants/restaurants.module';
     AuthModule,
     UsersModule,
     RestaurantsModule,
+    OrdersModule,
   ],
   controllers: [],
   providers: [],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(JwtMiddleware).forRoutes({
-      path: '/graphql',
-      method: RequestMethod.POST,
-    });
-  }
-}
+export class AppModule {}

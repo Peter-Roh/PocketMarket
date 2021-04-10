@@ -4,6 +4,7 @@ import { RestaurantsService } from './restaurants.service';
 import { User } from './../users/entities/user.entity';
 import { AuthUser } from './../auth/auth-user.decorator';
 import { Role } from 'src/auth/role.decorator';
+import { CoreDTO } from './../core/dtos/core.dto';
 import { 
     CreateCompanyInput,
     CreateCompanyOutput,
@@ -60,6 +61,20 @@ import {
     FindTouchgroupsOutput,
     FindItemsOutput,
     FindOptionsOutput,
+    FindCompanyOutput,
+    FindBrandOutput,
+    FindRestaurantOutput,
+    FindKeymapOutput,
+    FindTouchgroupOutput,
+    FindItemOutput,
+    FindOptionOutput,
+    FindCompanyInput,
+    FindBrandInput,
+    FindRestaurantInput,
+    FindKeymapInput,
+    FindTouchgroupInput,
+    FindItemInput,
+    FindOptionInput,
 } from './dtos/find-restaurant.dto';
 
 @Resolver(of => Restaurant)
@@ -262,6 +277,7 @@ export class RestaurantsResolver {
     }
 
     // find
+    // find all
 
     @Query(returns => FindCompaniesOutput)
     getCompanies(): Promise<FindCompaniesOutput> {
@@ -296,6 +312,101 @@ export class RestaurantsResolver {
     @Query(returns => FindOptionsOutput)
     getOptions(): Promise<FindOptionsOutput> {
         return this.restaurantsService.getOptions();
+    }
+
+    // get mine
+
+    @Query(returns => FindCompaniesOutput)
+    @Role(['Owner'])
+    getMyCompanies(
+        @AuthUser() owner: User,
+    ): Promise<FindCompaniesOutput> {
+        return this.restaurantsService.getMyCompanies(owner);
+    }
+
+    @Query(returns => FindBrandsOutput)
+    @Role(['Owner'])
+    getMyBrands(
+        @AuthUser() owner: User,
+    ): Promise<FindBrandsOutput> {
+        return this.restaurantsService.getMyBrands(owner);
+    }
+
+    @Query(returns => FindRestaurantsOutput)
+    @Role(['Owner'])
+    getMyRestaurants(
+        @AuthUser() owner: User,
+    ): Promise<FindRestaurantsOutput> {
+        return this.restaurantsService.getMyRestaurants(owner);
+    }
+
+    @Query(returns => FindKeymapsOutput)
+    @Role(['Owner'])
+    getMyKeymaps(
+        @AuthUser() owner: User,
+    ): Promise<FindKeymapsOutput> {
+        return this.restaurantsService.getMyKeymaps(owner);
+    }
+
+    @Query(returns => FindTouchgroupsOutput)
+    @Role(['Owner'])
+    getMyTouchgroups(
+        @AuthUser() owner: User,
+    ): Promise<FindTouchgroupsOutput> {
+        return this.restaurantsService.getMyTouchgroups(owner);
+    }
+
+    @Query(returns => FindItemsOutput)
+    @Role(['Owner'])
+    getMyItems(
+        @AuthUser() owner: User,
+    ): Promise<FindItemsOutput> {
+        return this.restaurantsService.getMyItems(owner);
+    }
+
+    @Query(returns => FindOptionsOutput)
+    @Role(['Owner'])
+    getMyOptions(
+        @AuthUser() owner: User,
+    ): Promise<FindOptionsOutput> {
+        return this.restaurantsService.getMyOptions(owner);
+    }
+
+    // find one by id
+
+    @Query(returns => FindCompanyOutput)
+    getCompanyById(@Args('input') findCompanyInput: FindCompanyInput): Promise<FindCompanyOutput> {
+        return this.restaurantsService.getCompanyById(findCompanyInput);
+    }
+
+    @Query(returns => FindBrandOutput)
+    getBrandById(@Args('input') findBrandInput: FindBrandInput): Promise<FindBrandOutput> {
+        return this.restaurantsService.getBrandById(findBrandInput);
+    }
+
+    @Query(returns => FindRestaurantOutput)
+    getRestaurantById(@Args('input') findRestaurantInput: FindRestaurantInput): Promise<FindRestaurantOutput> {
+        return this.restaurantsService.getRestaurantById(findRestaurantInput);
+    }
+
+    @Query(returns => FindKeymapOutput)
+    getKeymapById(@Args('input') findKeymapInput: FindKeymapInput): Promise<FindKeymapOutput> {
+        return this.restaurantsService.getKeymapById(findKeymapInput);
+    }
+
+    @Query(returns => FindTouchgroupOutput)
+    getTouchgroupById(@Args('input') findTouchgroupInput: FindTouchgroupInput): Promise<FindTouchgroupOutput> {
+        return this.restaurantsService.getTouchgroupById(findTouchgroupInput);
+    }
+
+    @Query(returns => FindItemOutput)
+    getItemById(@Args('input') findItemInput: FindItemInput): Promise<FindItemOutput> {
+        return this.restaurantsService.getItemById(findItemInput);
+    }
+
+    @Query(returns => FindOptionOutput)
+    getOptionById(@Args('input') findOptionInput: FindOptionInput): Promise<FindOptionOutput> {
+        return this.restaurantsService.getOptionById(findOptionInput);
     }
 
     // count
@@ -333,5 +444,25 @@ export class RestaurantsResolver {
     @Query(returns => Int)
     countOptions(): Promise<number> {
         return this.restaurantsService.countOptions();
+    }
+
+    // open / close restaurant
+
+    @Mutation(returns => CoreDTO)
+    @Role(['Owner'])
+    openRestaurant(
+        @AuthUser() owner: User,
+        @Args('input') findRestaurantInput: FindRestaurantInput,
+    ): Promise<CoreDTO> {
+        return this.restaurantsService.openRestaurant(owner, findRestaurantInput);
+    }
+
+    @Mutation(returns => CoreDTO)
+    @Role(['Owner'])
+    closeRestaurant(
+        @AuthUser() owner: User,
+        @Args('input') findRestaurantInput: FindRestaurantInput,
+    ): Promise<CoreDTO> {
+        return this.restaurantsService.closeRestaurant(owner, findRestaurantInput);
     }
 }

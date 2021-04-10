@@ -55,8 +55,7 @@ export class EditRestaurantInput extends PartialType(
             "coverImg",
             "address",
             "phoneNumber",
-            "brand",
-            "keymaps",
+            "description",
         ]
     )
 ) {
@@ -132,7 +131,7 @@ export class EditOptionInput extends PartialType(
     PickType(
         Option, [
             "name",
-            "price",
+            "choices",
         ]
     )
 ) {

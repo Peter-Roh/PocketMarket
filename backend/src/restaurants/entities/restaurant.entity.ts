@@ -5,6 +5,7 @@ import { IsBoolean, IsNumber, IsPhoneNumber, IsString } from 'class-validator';
 import { Brand } from './brand.entity';
 import { User } from './../../users/entities/user.entity';
 import { Keymap } from './keymap.entity';
+import { Order } from './../../orders/entities/order.entity';
 
 @InputType("RestaurantInputType", { isAbstract: true })
 @ObjectType()
@@ -75,4 +76,12 @@ export class Restaurant extends CoreEntity {
         { nullable: true, onDelete: 'SET NULL' }
     )
     keymaps?: Keymap[];
+
+    @Field(is => [Order], { nullable: true })
+    @OneToMany(
+        is => Order,
+        order => order.restaurant,
+        { nullable: true, onDelete: 'SET NULL'}
+    )
+    orders?: Order[];
 }

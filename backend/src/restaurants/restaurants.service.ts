@@ -9,6 +9,7 @@ import { Touchgroup } from './entities/touchgroup.entity';
 import { Item } from './entities/item.entity';
 import { Option } from './entities/option.entity';
 import { User } from './../users/entities/user.entity';
+import { CoreDTO } from './../core/dtos/core.dto';
 import {
     CreateCompanyInput,
     CreateCompanyOutput,
@@ -65,7 +66,33 @@ import {
     FindTouchgroupsOutput,
     FindItemsOutput,
     FindOptionsOutput,
+    FindCompanyOutput,
+    FindBrandOutput,
+    FindRestaurantOutput,
+    FindKeymapOutput,
+    FindTouchgroupOutput,
+    FindItemOutput,
+    FindOptionOutput,
+    FindCompanyInput,
+    FindBrandInput,
+    FindRestaurantInput,
+    FindKeymapInput,
+    FindTouchgroupInput,
+    FindItemInput,
+    FindOptionInput,
 } from './dtos/find-restaurant.dto';
+
+// ================================================================================================================
+// 이 파일에는 company, brand, restaurant, keymap, touchgroup, item, option과 관련된 기능이 구현되어 있습니다. 
+// 각 기능은 위의 순서대로 나열되어 있습니다. 
+// 구현된 기능은 다음과 같습니다. 
+// create
+// edit
+// delete
+// find - get all, get mine, get one by id
+// count
+// 영업 시작 / 마감
+// ================================================================================================================
 
 @Injectable()
 export class RestaurantsService {
@@ -170,10 +197,7 @@ export class RestaurantsService {
         try {
             const newKeymap = this.keymaps.create(createKeymapInput);
             newKeymap.owner = owner;
-            const restaurant = await this.restaurants.findOne(
-                createKeymapInput.restaurantId,
-                { loadRelationIds: true }
-            );
+            const restaurant = await this.restaurants.findOne(createKeymapInput.restaurantId);
             if(!restaurant) {
                 return {
                     accepted: false,
@@ -200,10 +224,7 @@ export class RestaurantsService {
         try {
             const newTouchgroup = this.touchgroups.create(createTouchgroupInput);
             newTouchgroup.owner = owner;
-            const keymap = await this.keymaps.findOne(
-                createTouchgroupInput.keymapId,
-                { loadRelationIds: true }
-            );
+            const keymap = await this.keymaps.findOne(createTouchgroupInput.keymapId);
             if(!keymap) {
                 return {
                     accepted: false,
@@ -211,6 +232,7 @@ export class RestaurantsService {
                 };
             }
             newTouchgroup.keymap = keymap;
+            await this.touchgroups.save(newTouchgroup);
             return {
                 accepted: true,
             };
@@ -229,10 +251,7 @@ export class RestaurantsService {
         try {
             const newItem = this.items.create(createItemInput);
             newItem.owner = owner;
-            const touchgroup = await this.touchgroups.findOne(
-                createItemInput.touchgroupId,
-                { loadRelationIds: true }
-            );
+            const touchgroup = await this.touchgroups.findOne(createItemInput.touchgroupId);
             if(!touchgroup) {
                 return {
                     accepted: false,
@@ -259,10 +278,7 @@ export class RestaurantsService {
         try {
             const newOption = this.options.create(createOptionInput);
             newOption.owner = owner;
-            const item = await this.items.findOne(
-                createOptionInput.itemId,
-                { loadRelationIds: true }
-            );
+            const item = await this.items.findOne(createOptionInput.itemId);
             if(!item) {
                 return {
                     accepted: false,
@@ -364,10 +380,7 @@ export class RestaurantsService {
         editRestaurantInput: EditRestaurantInput,
     ): Promise<EditRestaurantOutput> {
         try {
-            const restaurant = await this.restaurants.findOne(
-                editRestaurantInput.restaurantId,
-                { loadRelationIds: true }
-            );
+            const restaurant = await this.restaurants.findOne(editRestaurantInput.restaurantId);
             if(!restaurant) {
                 return {
                     accepted: false,
@@ -400,10 +413,7 @@ export class RestaurantsService {
         editKeymapInput: EditKeymapInput,
     ): Promise<EditKeymapOutput> {
         try {
-            const keymap = await this.keymaps.findOne(
-                editKeymapInput.keymapId,
-                { loadRelationIds: true }
-            );
+            const keymap = await this.keymaps.findOne(editKeymapInput.keymapId);
             if(!keymap) {
                 return {
                     accepted: false,
@@ -436,10 +446,7 @@ export class RestaurantsService {
         editTouchgroupInput: EditTouchgroupInput,
     ): Promise<EditTouchgroupOutput> {
         try {
-            const touchgroup = await this.touchgroups.findOne(
-                editTouchgroupInput.touchgroupId,
-                { loadRelationIds: true }
-            );
+            const touchgroup = await this.touchgroups.findOne(editTouchgroupInput.touchgroupId);
             if(!touchgroup) {
                 return {
                     accepted: false,
@@ -472,10 +479,7 @@ export class RestaurantsService {
         editItemInput: EditItemInput,
     ): Promise<EditItemOutput> {
         try {
-            const item = await this.items.findOne(
-                editItemInput.itemId,
-                { loadRelationIds: true }
-            );
+            const item = await this.items.findOne(editItemInput.itemId);
             if(!item) {
                 return {
                     accepted: false,
@@ -508,10 +512,7 @@ export class RestaurantsService {
         editOptionInput: EditOptionInput,
     ): Promise<EditOptionOutput> {
         try {
-            const option = await this.options.findOne(
-                editOptionInput.optionId,
-                { loadRelationIds: true }
-            );
+            const option = await this.options.findOne(editOptionInput.optionId);
             if(!option) {
                 return {
                     accepted: false,
@@ -549,9 +550,7 @@ export class RestaurantsService {
         { companyId }: DeleteCompanyInput
     ): Promise<DeleteCompanyOutput> {
         try {
-            const company = await this.companies.findOne(
-                companyId,
-            );
+            const company = await this.companies.findOne(companyId);
             if(!company) {
                 return {
                     accepted: false,
@@ -581,9 +580,7 @@ export class RestaurantsService {
         { brandId }: DeleteBrandInput
     ): Promise<DeleteBrandOutput> {
         try {
-            const brand = await this.brands.findOne(
-                brandId,
-            );
+            const brand = await this.brands.findOne(brandId);
             if(!brand) {
                 return {
                     accepted: false,
@@ -613,9 +610,7 @@ export class RestaurantsService {
         { restaurantId }: DeleteRestaurantInput
     ): Promise<DeleteRestaurantOutput> {
         try {
-            const restaurant = await this.restaurants.findOne(
-                restaurantId,
-            );
+            const restaurant = await this.restaurants.findOne(restaurantId);
             if(!restaurant) {
                 return {
                     accepted: false,
@@ -645,9 +640,7 @@ export class RestaurantsService {
         { keymapId }: DeleteKeymapInput
     ): Promise<DeleteKeymapOutput> {
         try {
-            const keymap = await this.keymaps.findOne(
-                keymapId,
-            );
+            const keymap = await this.keymaps.findOne(keymapId);
             if(!keymap) {
                 return {
                     accepted: false,
@@ -677,9 +670,7 @@ export class RestaurantsService {
         { touchgroupId }: DeleteTouchgroupInput
     ): Promise<DeleteTouchgroupOutput> {
         try {
-            const touchgroup = await this.touchgroups.findOne(
-                touchgroupId,
-            );
+            const touchgroup = await this.touchgroups.findOne(touchgroupId);
             if(!touchgroup) {
                 return {
                     accepted: false,
@@ -709,9 +700,7 @@ export class RestaurantsService {
         { itemId }: DeleteItemInput
     ): Promise<DeleteItemOutput> {
         try {
-            const item = await this.items.findOne(
-                itemId,
-            );
+            const item = await this.items.findOne(itemId);
             if(!item) {
                 return {
                     accepted: false,
@@ -741,9 +730,7 @@ export class RestaurantsService {
         { optionId }: DeleteOptionInput
     ): Promise<DeleteOptionOutput> {
         try {
-            const option = await this.options.findOne(
-                optionId,
-            );
+            const option = await this.options.findOne(optionId);
             if(!option) {
                 return {
                     accepted: false,
@@ -769,6 +756,7 @@ export class RestaurantsService {
     }
 
     // find
+    // find all
 
     async getCompanies(): Promise<FindCompaniesOutput> {
         try {
@@ -889,6 +877,290 @@ export class RestaurantsService {
         }
     }
 
+    // get mine
+
+    async getMyCompanies(owner: User): Promise<FindCompaniesOutput> {
+        try {
+            const companies = owner.companies;
+            return {
+                accepted: true,
+                companies,
+            };
+        } catch (e) {
+            return {
+                accepted: false,
+                error: "Could not load companies",
+            };
+        }
+    }
+
+    async getMyBrands(owner: User): Promise<FindBrandsOutput> {
+        try {
+            const brands = owner.brands;
+            return {
+                accepted: true,
+                brands,
+            };
+        } catch (e) {
+            return {
+                accepted: false,
+                error: "Could not load brands",
+            };
+        }
+    }
+
+    async getMyRestaurants(owner: User): Promise<FindRestaurantsOutput> {
+        try {
+            const restaurants = owner.restaurants;
+            return {
+                accepted: true,
+                restaurants,
+            };
+        } catch (e) {
+            return {
+                accepted: false,
+                error: "Could not load restaurants",
+            };
+        }
+    }
+
+    async getMyKeymaps(owner: User): Promise<FindKeymapsOutput> {
+        try {
+            const keymaps = await (await this.keymaps.find()).filter(
+                (elt) => {
+                    if(elt.ownerId === owner.id) {
+                        return true;
+                    }
+                }
+            );
+            return {
+                accepted: true,
+                keymaps,
+            };
+        } catch (e) {
+            return {
+                accepted: false,
+                error: "Could not load keymaps",
+            };
+        }
+    }
+
+    async getMyTouchgroups(owner: User): Promise<FindTouchgroupsOutput> {
+        try {
+            const touchgroups = await (await this.touchgroups.find()).filter(
+                (elt) => {
+                    if(elt.ownerId === owner.id) {
+                        return true;
+                    }
+                }
+            );
+            return {
+                accepted: true,
+                touchgroups,
+            };
+        } catch (e) {
+            return {
+                accepted: false,
+                error: "Could not load touchgroups",
+            };
+        }
+    }
+
+    async getMyItems(owner: User): Promise<FindItemsOutput> {
+        try {
+            const items = await (await this.items.find()).filter(
+                (elt) => {
+                    if(elt.ownerId === owner.id) {
+                        return true;
+                    }
+                }
+            );
+            return {
+                accepted: true,
+                items,
+            };
+        } catch (e) {
+            return {
+                accepted: false,
+                error: "Could not load items",
+            };
+        }
+    }
+
+    async getMyOptions(owner: User): Promise<FindOptionsOutput> {
+        try {
+            const options = await (await this.options.find()).filter(
+                (elt) => {
+                    if(elt.ownerId === owner.id) {
+                        return true;
+                    }
+                }
+            );
+            return {
+                accepted: true,
+                options,
+            };
+        } catch (e) {
+            return {
+                accepted: false,
+                error: "Could not load options",
+            };
+        }
+    }
+
+    // find one by id
+
+    async getCompanyById({ companyId }: FindCompanyInput): Promise<FindCompanyOutput> {
+        try {
+            const company = await this.companies.findOne(companyId);
+            if(!company) {
+                return {
+                    accepted: false,
+                    error: "Company Not Found"
+                };
+            }
+            return {
+                accepted: true,
+                company,
+            };
+        } catch (e) {
+            return {
+                accepted: false,
+                error: "Could not get company",
+            };
+        }
+    }
+
+    async getBrandById({ brandId }: FindBrandInput): Promise<FindBrandOutput> {
+        try {
+            const brand = await this.brands.findOne(brandId);
+            if(!brand) {
+                return {
+                    accepted: false,
+                    error: "Brand Not Found"
+                };
+            }
+            return {
+                accepted: true,
+                brand,
+            };
+        } catch (e) {
+            return {
+                accepted: false,
+                error: "Could not get brand",
+            };
+        }
+    }
+
+    async getRestaurantById({ restaurantId }: FindRestaurantInput): Promise<FindRestaurantOutput> {
+        try {
+            const restaurant = await this.restaurants.findOne(
+                restaurantId, {
+                relations: ['owner']
+            });
+            if(!restaurant) {
+                return {
+                    accepted: false,
+                    error: "Restaurant Not Found"
+                };
+            }
+            return {
+                accepted: true,
+                restaurant,
+            };
+        } catch (e) {
+            return {
+                accepted: false,
+                error: "Could not get restaurant",
+            };
+        }
+    }
+
+    async getKeymapById({ keymapId }: FindKeymapInput): Promise<FindKeymapOutput> {
+        try {
+            const keymap = await this.keymaps.findOne(keymapId);
+            if(!keymap) {
+                return {
+                    accepted: false,
+                    error: "Keymap Not Found"
+                };
+            }
+            return {
+                accepted: true,
+                keymap,
+            };
+        } catch (e) {
+            return {
+                accepted: false,
+                error: "Could not get keymap",
+            };
+        }
+    }
+
+    async getTouchgroupById({ touchgroupId }: FindTouchgroupInput): Promise<FindTouchgroupOutput> {
+        try {
+            const touchgroup = await this.touchgroups.findOne(touchgroupId);
+            if(!touchgroup) {
+                return {
+                    accepted: false,
+                    error: "Touchgroup Not Found"
+                };
+            }
+            return {
+                accepted: true,
+                touchgroup,
+            };
+        } catch (e) {
+            return {
+                accepted: false,
+                error: "Could not get touchgroup",
+            };
+        }
+    }
+
+    async getItemById({ itemId }: FindItemInput): Promise<FindItemOutput> {
+        try {
+            const item = await this.items.findOne(itemId);
+            if(!item) {
+                return {
+                    accepted: false,
+                    error: "Item Not Found"
+                };
+            }
+            return {
+                accepted: true,
+                item,
+            };
+        } catch (e) {
+            return {
+                accepted: false,
+                error: "Could not get item",
+            };
+        }
+    }
+
+    async getOptionById({ optionId }: FindOptionInput): Promise<FindOptionOutput> {
+        try {
+            const option = await this.options.findOne(optionId);
+            if(!option) {
+                return {
+                    accepted: false,
+                    error: "Option Not Found"
+                };
+            }
+            return {
+                accepted: true,
+                option,
+            };
+        } catch (e) {
+            return {
+                accepted: false,
+                error: "Could not get option",
+            };
+        }
+    }
+
+
     // count
 
     async countCompanies(): Promise<number> {
@@ -917,5 +1189,85 @@ export class RestaurantsService {
 
     async countOptions(): Promise<number> {
         return this.options.count();
+    }
+
+    // open / close restaurant
+
+    async openRestaurant(
+        owner: User,
+        { restaurantId }: FindRestaurantInput,
+    ):Promise<CoreDTO> {
+        try {
+            const restaurant = await this.restaurants.findOne(restaurantId);
+            if(!restaurant) {
+                return {
+                    accepted: false,
+                    error: "Restaurant Not Found"
+                };
+            }
+            if(owner.id !== restaurant.ownerId) {
+                return {
+                    accepted: false,
+                    error: "Not Permitted Behavior"
+                };
+            }
+            if(restaurant.isOpen) {
+                return {
+                    accepted: false,
+                    error: "Restaurant is already open"
+                };
+            }
+            await this.restaurants.save([{
+                id: restaurantId,
+                isOpen: true,
+            }]);
+            return {
+                accepted: true,
+            };
+        } catch (e) {
+            return {
+                accepted: false,
+                error: "Could not open restaurant"
+            };
+        }
+    }
+
+    async closeRestaurant(
+        owner: User,
+        { restaurantId }: FindRestaurantInput,
+    ):Promise<CoreDTO> {
+        try {
+            const restaurant = await this.restaurants.findOne(restaurantId);
+            if(!restaurant) {
+                return {
+                    accepted: false,
+                    error: "Restaurant Not Found"
+                };
+            }
+            if(owner.id !== restaurant.ownerId) {
+                return {
+                    accepted: false,
+                    error: "Not Permitted Behavior"
+                };
+            }
+            if(!restaurant.isOpen) {
+                return {
+                    accepted: false,
+                    error: "Restaurant is already closed"
+                };
+            }
+            await this.restaurants.save([{
+                id: restaurantId,
+                isOpen: false,
+            }]);
+            return {
+                accepted: true,
+            };
+        } catch (e) {
+            return {
+                accepted: false,
+                error: "Could not close restaurant"
+            };
+        }
     }
 }
