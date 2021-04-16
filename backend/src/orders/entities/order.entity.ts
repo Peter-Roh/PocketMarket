@@ -54,6 +54,4 @@ export class Order extends CoreEntity {
     @ManyToMany(is => OrderMenu, { eager: true })
     @JoinTable()
     items: OrderMenu[];
-
-    // 주문 시각?
 }

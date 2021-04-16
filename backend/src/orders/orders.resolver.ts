@@ -30,7 +30,6 @@ export class OrdersResolver {
     }
 
     // 조회
-
     @Query(returns => GetOrdersOutput)
     @Role(['Any'])
     getOrders(
@@ -58,6 +57,7 @@ export class OrdersResolver {
         return this.ordersService.editOrderStatus(user, editOrderInput);
     }
 
+    // 들어오는 주문 기다리기
     @Subscription(returns => Order, {
         filter: ({ pendingOrders: { ownerId } }, _, { user }) => {
             return ownerId === user.id; // 식당 주인만 주문을 볼 수 있음
@@ -69,12 +69,14 @@ export class OrdersResolver {
         return this.pubSub.asyncIterator(NEW_PENDING_ORDER);
     }
 
+    // 조리 완료된 주문 알림
     @Subscription(returns => Order)
     @Role(["Any"])
     cookedOrders() {
         return this.pubSub.asyncIterator(NEW_COOKED_ORDER);
     }
 
+    // 주문 상태 변경 체크
     @Subscription(returns => Order, {
         filter: (
             { orderUpdates: order }: { orderUpdates: Order },
@@ -82,9 +84,9 @@ export class OrdersResolver {
             { user }: {user: User},
             ) => {
                 if(order.customerId !== user.id && order.restaurant.ownerId !== user.id) {
-                    return false;
+                    return false; // 고객이거나 식당 주인일 경우에만
                 }
-                return order.id === input.id;
+                return order.id === input.id; // 해당하는 주문 확인 가능
             }
         }
     )

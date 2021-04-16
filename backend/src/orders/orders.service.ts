@@ -98,7 +98,6 @@ export class OrdersService {
     }
 
     // 조회
-
     async getOrders(
         user: User,
     ): Promise<GetOrdersOutput> {
@@ -187,7 +186,6 @@ export class OrdersService {
     }
 
     // 주문 상태 변경
-
     async editOrderStatus(
         user: User,
         { id: orderId }: EditOrderInput
