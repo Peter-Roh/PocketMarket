@@ -911,7 +911,13 @@ export class RestaurantsService {
 
     async getMyRestaurants(owner: User): Promise<FindRestaurantsOutput> {
         try {
-            const restaurants = owner.restaurants;
+            const restaurants = await (await this.restaurants.find()).filter(
+                (elt) => {
+                    if(elt.ownerId === owner.id) {
+                        return true;
+                    }
+                }
+            );
             return {
                 accepted: true,
                 restaurants,
@@ -1054,10 +1060,7 @@ export class RestaurantsService {
 
     async getRestaurantById({ restaurantId }: FindRestaurantInput): Promise<FindRestaurantOutput> {
         try {
-            const restaurant = await this.restaurants.findOne(
-                restaurantId, {
-                relations: ['owner']
-            });
+            const restaurant = await this.restaurants.findOne(restaurantId);
             if(!restaurant) {
                 return {
                     accepted: false,

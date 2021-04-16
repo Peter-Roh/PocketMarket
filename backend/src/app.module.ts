@@ -14,6 +14,7 @@ import { Item } from './restaurants/entities/item.entity';
 import { Option } from './restaurants/entities/option.entity';
 import { Order } from './orders/entities/order.entity';
 import { OrderMenu } from './orders/entities/order-menu.entity';
+import { CoreModule } from './core/core.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { JwtModule } from './jwt/jwt.module';
@@ -21,6 +22,7 @@ import { JwtMiddleware } from './jwt/jwt.middleware';
 import { MailModule } from './mail/mail.module';
 import { RestaurantsModule } from './restaurants/restaurants.module';
 import { OrdersModule } from './orders/orders.module';
+import { UploadsModule } from './uploads/uploads.module';
 
 @Module({
   imports: [
@@ -63,6 +65,7 @@ import { OrdersModule } from './orders/orders.module';
       ],
     }),
     GraphQLModule.forRoot({ // code first method 이용
+      playground: process.env.NODE_ENV !== 'production',
       installSubscriptionHandlers: true, // enable websocket protocol for subscription
       autoSchemaFile: true,
       context: ({ req, connection }) => {
@@ -79,10 +82,12 @@ import { OrdersModule } from './orders/orders.module';
       domain: process.env.MAILGUN_DOMAIN_NAME,
       fromEmail: process.env.MAILGUN_FROM_EMAIL,
     }),
+    CoreModule,
     AuthModule,
     UsersModule,
     RestaurantsModule,
     OrdersModule,
+    UploadsModule,
   ],
   controllers: [],
   providers: [],

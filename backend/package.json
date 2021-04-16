@@ -31,6 +31,7 @@
     "@types/cookie-parser": "^1.4.2",
     "@types/jsonwebtoken": "^8.5.0",
     "apollo-server-express": "^2.19.2",
+    "aws-sdk": "^2.888.0",
     "bcrypt": "^5.0.0",
     "class-transformer": "^0.3.2",
     "class-validator": "^0.13.1",

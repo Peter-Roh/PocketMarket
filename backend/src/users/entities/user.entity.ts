@@ -94,7 +94,7 @@ export class User extends CoreEntity {
     @OneToMany(
         type => Company,
         company => company.owner,
-        { nullable: true, onDelete: 'SET NULL' }
+        { nullable: true, onDelete: 'SET NULL', eager: true }
     )
     companies?: Company[];
 
@@ -102,7 +102,7 @@ export class User extends CoreEntity {
     @OneToMany(
         type => Brand,
         brand => brand.owner,
-        { nullable: true, onDelete: 'SET NULL' }
+        { nullable: true, onDelete: 'SET NULL', eager: true }
     )
     brands?: Brand[];
 

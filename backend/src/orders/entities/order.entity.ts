@@ -30,7 +30,7 @@ export class Order extends CoreEntity {
     @ManyToOne(
         is => Restaurant,
         restaurant => restaurant.orders,
-        { nullable: true, onDelete: 'SET NULL'}
+        { nullable: true, onDelete: 'SET NULL', eager: true }
     )
     restaurant?: Restaurant;
 
@@ -38,7 +38,7 @@ export class Order extends CoreEntity {
     @ManyToOne(
         is => User,
         user => user.orders,
-        { nullable: true, onDelete: 'SET NULL' }
+        { nullable: true, onDelete: 'SET NULL', eager: true }
     )
     customer?: User;
 
