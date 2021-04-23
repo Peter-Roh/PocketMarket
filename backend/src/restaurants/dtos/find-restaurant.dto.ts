@@ -1,5 +1,6 @@
 import { Field, InputType, Int, ObjectType } from '@nestjs/graphql';
 import { CoreDTO } from './../../core/dtos/core.dto';
+import { PaginationInput, PaginationOutput } from './../../core/dtos/pagination.dto';
 import { Company } from './../entities/company.entity';
 import { Brand } from './../entities/brand.entity';
 import { Restaurant } from './../entities/restaurant.entity';
@@ -21,8 +22,11 @@ export class FindBrandsOutput extends CoreDTO {
     brands?: Brand[];
 }
 
+@InputType()
+export class FindRestaurantsInput extends PaginationInput {}
+
 @ObjectType()
-export class FindRestaurantsOutput extends CoreDTO {
+export class FindRestaurantsOutput extends PaginationOutput {
     @Field(is => [Restaurant], { nullable: true })
     restaurants?: Restaurant[];
 }

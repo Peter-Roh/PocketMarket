@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { GraphQLModule } from '@nestjs/graphql';
@@ -14,15 +14,18 @@ import { Item } from './restaurants/entities/item.entity';
 import { Option } from './restaurants/entities/option.entity';
 import { Order } from './orders/entities/order.entity';
 import { OrderMenu } from './orders/entities/order-menu.entity';
+import { Board } from './boards/entities/board.entity';
+import { Post } from './boards/entities/post.entity';
+import { Comment } from './boards/entities/comment.entity';
 import { CoreModule } from './core/core.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { JwtModule } from './jwt/jwt.module';
-import { JwtMiddleware } from './jwt/jwt.middleware';
 import { MailModule } from './mail/mail.module';
 import { RestaurantsModule } from './restaurants/restaurants.module';
 import { OrdersModule } from './orders/orders.module';
 import { UploadsModule } from './uploads/uploads.module';
+import { BoardsModule } from './boards/boards.module';
 
 @Module({
   imports: [
@@ -62,6 +65,9 @@ import { UploadsModule } from './uploads/uploads.module';
         Option,
         Order,
         OrderMenu,
+        Board,
+        Post,
+        Comment,
       ],
     }),
     GraphQLModule.forRoot({ // code first method 이용
@@ -88,6 +94,7 @@ import { UploadsModule } from './uploads/uploads.module';
     RestaurantsModule,
     OrdersModule,
     UploadsModule,
+    BoardsModule,
   ],
   controllers: [],
   providers: [],

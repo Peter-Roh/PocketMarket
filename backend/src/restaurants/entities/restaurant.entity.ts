@@ -1,5 +1,5 @@
 import { Field, InputType, ObjectType } from '@nestjs/graphql';
-import { Column, Entity, ManyToMany, ManyToOne, OneToMany, RelationId } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, RelationId } from 'typeorm';
 import { CoreEntity } from './../../core/entities/core.entity';
 import { IsBoolean, IsNumber, IsPhoneNumber, IsString } from 'class-validator';
 import { Brand } from './brand.entity';
@@ -59,6 +59,7 @@ export class Restaurant extends CoreEntity {
         user => user.likeRestaurants,
         { nullable: true, onDelete: 'SET NULL' }
     )
+    @JoinTable()
     likeUser?: User[];
 
     @Field(is => Brand)

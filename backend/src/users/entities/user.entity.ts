@@ -11,6 +11,8 @@ import { Touchgroup } from './../../restaurants/entities/touchgroup.entity';
 import { Item } from './../../restaurants/entities/item.entity';
 import { Option } from './../../restaurants/entities/option.entity';
 import { Order } from './../../orders/entities/order.entity';
+import { Post } from './../../boards/entities/post.entity';
+import { Comment } from 'src/boards/entities/comment.entity';
 import * as bcrypt from 'bcrypt';
 
 export enum UserRole {
@@ -162,7 +164,29 @@ export class User extends CoreEntity {
     )
     orders?: Order[];
 
-    // 게시물 좋아요
+    @Field(is => [Post], { nullable: true })
+    @OneToMany(
+        is => Post,
+        post => post.user,
+        { nullable: true, onDelete: 'SET NULL' }
+    )
+    posts?: Post[];
+
+    @Field(is => [Comment], { nullable: true })
+    @OneToMany(
+        is => Comment,
+        comment => comment.user,
+        { nullable: true, onDelete: 'SET NULL' }
+    )
+    comments?: Comment[];
+
+    @Field(is => [Post], { nullable: true })
+    @ManyToMany(
+        is => Post,
+        post => post.likes,
+        { nullable: true, onDelete: 'SET NULL' }
+    )
+    likePosts: Post[];
 
     // password encryption
     // use bcrypt for security

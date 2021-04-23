@@ -61,6 +61,7 @@ import {
 import {
     FindCompaniesOutput,
     FindBrandsOutput,
+    FindRestaurantsInput,
     FindRestaurantsOutput,
     FindKeymapsOutput,
     FindTouchgroupsOutput,
@@ -792,16 +793,24 @@ export class RestaurantsService {
         }
     }
 
-    async getRestaurants(): Promise<FindRestaurantsOutput> {
+    async getRestaurants(
+        { page }: FindRestaurantsInput
+    ): Promise<FindRestaurantsOutput> {
         try {
-            const restaurants = await this.restaurants.find({
-                relations: ['owner']
+            const COUNT = 20; // page 당 결과 개수 조절할 것
+            const [restaurants, totalResults] = await this.restaurants.findAndCount({
+                relations: ['owner'],
+                take: COUNT,
+                skip: (page - 1) * COUNT,
             });
             return {
                 accepted: true,
+                totalResults,
+                totalPages: Math.ceil(totalResults / COUNT),
                 restaurants,
             };
         } catch (e) {
+            console.log(e);
             return {
                 accepted: false,
                 error: "Could not load restaurants",

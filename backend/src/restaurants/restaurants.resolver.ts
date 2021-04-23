@@ -56,6 +56,7 @@ import {
 import {
     FindCompaniesOutput,
     FindBrandsOutput,
+    FindRestaurantsInput,
     FindRestaurantsOutput,
     FindKeymapsOutput,
     FindTouchgroupsOutput,
@@ -290,8 +291,10 @@ export class RestaurantsResolver {
     }
 
     @Query(returns => FindRestaurantsOutput)
-    getRestaurants(): Promise<FindRestaurantsOutput> {
-        return this.restaurantsService.getRestaurants();
+    getRestaurants(
+        @Args('input') findRestaurantsInput: FindRestaurantsInput
+    ): Promise<FindRestaurantsOutput> {
+        return this.restaurantsService.getRestaurants(findRestaurantsInput);
     }
 
     @Query(returns => FindKeymapsOutput)
