@@ -8,7 +8,7 @@ import { CoreDTO } from './../../core/dtos/core.dto';
 @ObjectType()
 export class GetBoardsOutput extends CoreDTO {
     @Field(is => [Board], { nullable: true })
-        boards?: Board[];
+    boards?: Board[];
 }
 
 @InputType()
@@ -21,7 +21,7 @@ export class GetPostsInput {
 @ObjectType()
 export class GetPostsOutput extends CoreDTO {
     @Field(is => [Post], { nullable: true })
-        posts?: Post[];
+    posts?: Post[];
 }
 
 @InputType()
@@ -34,7 +34,7 @@ export class GetCommentsInput {
 @ObjectType()
 export class GetCommentsOutput extends CoreDTO {
     @Field(is => [Comment], { nullable: true })
-        comments?: Comment[];
+    comments?: Comment[];
 }
 
 @InputType()
@@ -47,7 +47,7 @@ export class GetBoardInput {
 @ObjectType()
 export class GetBoardOutput extends CoreDTO {
     @Field(is => Board, { nullable: true })
-        board?: Board;
+    board?: Board;
 }
 
 @InputType()
@@ -60,5 +60,5 @@ export class GetPostInput {
 @ObjectType()
 export class GetPostOutput extends CoreDTO {
     @Field(is => Post, { nullable: true })
-        post?: Post;
+    post?: Post;
 }

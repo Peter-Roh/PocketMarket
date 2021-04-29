@@ -116,14 +116,6 @@ export class User extends CoreEntity {
     )
     restaurants?: Restaurant[];
 
-    @Field(is => [Restaurant], { nullable: true })
-    @ManyToMany(
-        type => Restaurant,
-        restaurant => restaurant.likeUser,
-        { nullable: true, onDelete: 'SET NULL' }
-    )
-    likeRestaurants?: Restaurant[];
-
     @Field(is => [Keymap], { nullable: true })
     @OneToMany(
         type => Keymap,

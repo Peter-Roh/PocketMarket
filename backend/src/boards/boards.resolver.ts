@@ -7,6 +7,7 @@ import { Role } from "src/auth/role.decorator";
 import {
     CreateBoardInput,
     CreateBoardOutput,
+    CreateReviewInput,
     CreatePostInput,
     CreatePostOutput,
     CreateCommentInput,
@@ -39,6 +40,10 @@ import {
     DeleteCommentInput,
     DeleteCommentOutput,
 } from './dtos/delete-board.dto';
+import {
+    LikePostInput,
+    LikePostOutput,
+} from './dtos/like-post.dto';
 
 @Resolver(of => Board)
 export class BoardsResolver {
@@ -59,11 +64,10 @@ export class BoardsResolver {
     @Mutation(returns => CreateBoardOutput)
     @Role(['Owner', 'Admin'])
     async createRestaurantBoard(
-        @Args('input') restaurantId: number,
         @AuthUser() authUser: User,
         @Args('input') createBoardInput: CreateBoardInput,
     ): Promise<CreateBoardOutput> {
-        return this.boardsService.createRestaurantBoard(restaurantId, authUser, createBoardInput);
+        return this.boardsService.createRestaurantBoard(authUser, createBoardInput);
     }
 
     @Mutation(returns => CreateBoardOutput)
@@ -76,33 +80,29 @@ export class BoardsResolver {
 
     @Mutation(returns => CreatePostOutput)
     @Role(['Any'])
-    async createReview(
-        @Args('input') orderId: number,
+    async createReview( // order와 연결되어 있음
         @AuthUser() authUser: User,
-        @Args('input') boardId: number,
-        @Args('input') createPostInput: CreatePostInput,
+        @Args('input') createReviewInput: CreateReviewInput,
     ): Promise<CreatePostOutput> {
-        return this.boardsService.createReview(orderId, authUser, boardId, createPostInput);
+        return this.boardsService.createReview(authUser, createReviewInput);
     }
 
     @Mutation(returns => CreatePostOutput)
     @Role(['Any'])
-    async createPost(
-        @Args('input') boardId: number,
+    async createPost( // order와 관련 없음
         @AuthUser() authUser: User,
         @Args('input') createPostInput: CreatePostInput,
     ): Promise<CreatePostOutput> {
-        return this.boardsService.createPost(boardId, authUser, createPostInput);
+        return this.boardsService.createPost(authUser, createPostInput);
     }
 
     @Mutation(returns => CreateCommentOutput)
     @Role(['Any'])
     async createComment(
-        @Args('input') postId: number,
         @AuthUser() authUser: User,
         @Args('input') createCommentInput: CreateCommentInput,
     ): Promise<CreateCommentOutput> {
-        return this.boardsService.createComment(postId, authUser, createCommentInput);
+        return this.boardsService.createComment(authUser, createCommentInput);
     }
 
     // edit
@@ -198,4 +198,12 @@ export class BoardsResolver {
     }
 
     // 좋아요
+    @Mutation(returns => LikePostOutput)
+    @Role(['Any'])
+    likePost(
+        @Args('input') likePostInput: LikePostInput,
+        @AuthUser() authUser: User,
+    ): Promise<LikePostOutput> {
+        return this.boardsService.likePost(likePostInput, authUser);
+    }
 }

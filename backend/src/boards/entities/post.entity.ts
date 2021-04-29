@@ -1,5 +1,5 @@
 import { CoreEntity } from './../../core/entities/core.entity';
-import { Field, InputType, ObjectType } from "@nestjs/graphql";
+import { Field, InputType, Int, ObjectType } from "@nestjs/graphql";
 import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, RelationId } from "typeorm";
 import { IsArray, IsNumber, IsString } from 'class-validator';
 import { User } from './../../users/entities/user.entity';
@@ -35,6 +35,11 @@ export class Post extends CoreEntity {
     @JoinTable()
     order?: Order; // 주문 건당 리뷰를 쓰는 경우
 
+    @Column({ default: 0 })
+    @Field(is => Int)
+    @IsNumber()
+    views: number;
+
     @Field(is => Board)
     @ManyToOne(
         is => Board,
@@ -63,7 +68,7 @@ export class Post extends CoreEntity {
     @ManyToMany(
         is => User,
         user => user.likePosts,
-        { nullable: true, onDelete: 'SET NULL' }
+        { nullable: true, onDelete: 'SET NULL', eager: true }
     )
     @JoinTable()
     likes: User[];

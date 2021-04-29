@@ -77,6 +77,11 @@ import {
     FindItemInput,
     FindOptionInput,
 } from './dtos/find-restaurant.dto';
+import {
+    SearchRestaurantInput,
+    SearchRestaurantOutput,
+} from './dtos/search-restaurant.dto';
+
 
 @Resolver(of => Restaurant)
 export class RestaurantsResolver {
@@ -410,6 +415,13 @@ export class RestaurantsResolver {
     @Query(returns => FindOptionOutput)
     getOptionById(@Args('input') findOptionInput: FindOptionInput): Promise<FindOptionOutput> {
         return this.restaurantsService.getOptionById(findOptionInput);
+    }
+
+    // search
+
+    @Query(returns => SearchRestaurantOutput)
+    searchRestaurant(@Args('input') serachRestaurantInput: SearchRestaurantInput): Promise<SearchRestaurantOutput> {
+        return this.restaurantsService.searchRestaurant(serachRestaurantInput);
     }
 
     // count

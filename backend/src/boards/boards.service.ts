@@ -10,6 +10,7 @@ import { Restaurant } from './../restaurants/entities/restaurant.entity';
 import {
     CreateBoardInput,
     CreateBoardOutput,
+    CreateReviewInput,
     CreatePostInput,
     CreatePostOutput,
     CreateCommentInput,
@@ -42,6 +43,10 @@ import {
     DeletePostInput,
     DeletePostOutput,
 } from "./dtos/delete-board.dto";
+import {
+    LikePostInput,
+    LikePostOutput,
+} from './dtos/like-post.dto';
 
 @Injectable()
 export class BoardsService {
@@ -74,13 +79,12 @@ export class BoardsService {
     }
 
     async createRestaurantBoard(
-        restaurantId: number,
         user: User,
         createBoardInput: CreateBoardInput,
     ): Promise<CreateBoardOutput> {
         try {
             const newBoard = this.boards.create(createBoardInput);
-            const restaurant = await this.restaurants.findOne(restaurantId);
+            const restaurant = await this.restaurants.findOne(createBoardInput.restaurantId);
             if(!restaurant) {
                 return {
                     accepted: false,
@@ -124,15 +128,13 @@ export class BoardsService {
     }
 
     async createReview(
-        orderId: number,
         user: User,
-        boardId: number,
-        createPostInput: CreatePostInput,
+        createReviewInput: CreateReviewInput,
     ): Promise<CreatePostOutput> {
         try {
-            const newPost = this.posts.create(createPostInput);
+            const newPost = this.posts.create(createReviewInput);
             newPost.user = user;
-            const order = await this.orders.findOne(orderId);
+            const order = await this.orders.findOne(createReviewInput.orderId);
             if(!order) {
                 return {
                     accepted: false,
@@ -146,7 +148,7 @@ export class BoardsService {
                 };
             }
             newPost.order = order;
-            const board = await this.boards.findOne(boardId);
+            const board = await this.boards.findOne(createReviewInput.boardId);
             if(!board) {
                 return {
                     accepted: false,
@@ -167,14 +169,13 @@ export class BoardsService {
     }
 
     async createPost(
-        boardId: number,
         user: User,
-        createPostInput: CreatePostInput
+        createPostInput: CreatePostInput,
     ): Promise<CreatePostOutput> {
         try {
             const newPost = this.posts.create(createPostInput);
             newPost.user = user;
-            const board = await this.boards.findOne(boardId);
+            const board = await this.boards.findOne(createPostInput.boardId);
             if(!board) {
                 return {
                     accepted: false,
@@ -195,14 +196,13 @@ export class BoardsService {
     }
 
     async createComment(
-        postId: number,
         user: User,
         createCommentInput: CreateCommentInput,
     ): Promise<CreateCommentOutput> {
         try {
             const newComment = this.comments.create(createCommentInput);
             newComment.user = user;
-            const post = await this.posts.findOne(postId);
+            const post = await this.posts.findOne(createCommentInput.postId);
             if(!post) {
                 return {
                     accepted: false,
@@ -415,6 +415,11 @@ export class BoardsService {
                     error: "Post Not Found"
                 };
             }
+            post.views += 1;
+            await this.posts.save([{
+                id: postId,
+                views: post.views,
+            }]);
             return {
                 accepted: true,
                 post,
@@ -514,4 +519,51 @@ export class BoardsService {
     }
 
     // 좋아요
+
+    async likePost(
+        likePostInput: LikePostInput,
+        user: User,
+    ): Promise<LikePostOutput> {
+        try {
+            const post = await this.posts.findOne(likePostInput.postId);
+            let flag = false;
+            let idx;
+            if(!post) {
+                return {
+                    accepted: false,
+                    error: "Post Not Found",
+                };
+            }
+            for(let i in post.likes) {
+                if(post.likes[i].id === user.id) {
+                    idx = +i;
+                    flag = true
+                }
+            }
+             if(flag) {
+                post.likes.splice(idx, 1);
+                await this.posts.save([{
+                    id: likePostInput.postId,
+                    likes: post.likes,
+                }]);
+                return {
+                    accepted: true,
+                };
+            } else {
+                post.likes.push(user);
+                await this.posts.save([{
+                    id: likePostInput.postId,
+                    likes: post.likes,
+                }]);
+                return {
+                    accepted: true,
+                }
+            }
+         } catch (e) {
+            return {
+                accepted: false,
+                error: "Like post failed",
+            };
+        }
+    }
 }

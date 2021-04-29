@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from 'typeorm';
+import { Raw, Repository } from 'typeorm';
 import { Company } from './entities/company.entity';
 import { Brand } from './entities/brand.entity';
 import { Restaurant } from './entities/restaurant.entity';
@@ -82,6 +82,10 @@ import {
     FindItemInput,
     FindOptionInput,
 } from './dtos/find-restaurant.dto';
+import {
+    SearchRestaurantInput,
+    SearchRestaurantOutput,
+} from './dtos/search-restaurant.dto';
 
 // ================================================================================================================
 // 이 파일에는 company, brand, restaurant, keymap, touchgroup, item, option과 관련된 기능이 구현되어 있습니다. 
@@ -91,6 +95,7 @@ import {
 // edit
 // delete
 // find - get all, get mine, get one by id
+// search
 // count
 // 영업 시작 / 마감
 // ================================================================================================================
@@ -1172,6 +1177,31 @@ export class RestaurantsService {
         }
     }
 
+    // search
+
+    async searchRestaurant({ query, page }: SearchRestaurantInput): Promise<SearchRestaurantOutput> {
+        try {
+            const COUNT = 20; // 검색 결과 페이지당 보여줄 개수
+            const [ restaurants, totalResults ] = await this.restaurants.findAndCount({
+                where: {
+                    name: Raw(name => `${name} ILIKE '%${query}%'`), // sql query
+                },
+                take: COUNT,
+                skip: (page -1) * COUNT,
+            });
+            return {
+                accepted: true,
+                restaurants,
+                totalResults,
+                totalPages: Math.ceil(totalResults / COUNT),
+            };
+        } catch (e) {
+            return {
+                accepted: false,
+                error: "Could not search for restaurants",
+            };
+        }
+    }
 
     // count
 

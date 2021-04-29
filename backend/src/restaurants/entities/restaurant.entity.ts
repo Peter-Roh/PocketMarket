@@ -53,15 +53,6 @@ export class Restaurant extends CoreEntity {
     @IsNumber()
     ownerId: number;
 
-    @Field(is => [User], { nullable: true })
-    @ManyToMany(
-        type => User,
-        user => user.likeRestaurants,
-        { nullable: true, onDelete: 'SET NULL' }
-    )
-    @JoinTable()
-    likeUser?: User[];
-
     @Field(is => Brand)
     @ManyToOne(
         type => Brand,
