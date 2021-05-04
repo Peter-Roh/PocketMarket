@@ -17,7 +17,7 @@ export class Board extends CoreEntity {
     @Column({ default: false})
     @Field(is => Boolean)
     @IsBoolean()
-    isAdmin: boolean;
+    isAdmin: boolean; // 관리자 전용 게시판
 
     @Field(is => [Post], {nullable: true})
     @OneToMany(

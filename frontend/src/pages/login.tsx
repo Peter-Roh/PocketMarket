@@ -1,20 +1,24 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { gql, useMutation } from '@apollo/client';
 import logo from '../assets/logo.png';
 import { useForm } from 'react-hook-form';
 import { FormError } from '../components/form-error';
+import {
+    LoginMutation,
+    LoginMutationVariables,
+} from '../types/LoginMutation';
+import { Button } from '../components/button';
 
 interface ILoginForm {
     email: string;
     password: string;
+    resultError?: string;
 }
 
 const LOGIN_MUTATION = gql`
-    mutation LoginMutation($email: String!, $password: String!) {
-        login(input: {
-            email: $email,
-            password: $password
-        }) {
+    mutation LoginMutation($loginInput: LoginInput!) {
+        login(input: $loginInput) {
             accepted
             token
             error
@@ -23,16 +27,32 @@ const LOGIN_MUTATION = gql`
 `;
 
 export const Login = () => {
-    const { register, getValues, errors, handleSubmit } = useForm<ILoginForm>();
-    const [loginMutation, {loading, error, data}] = useMutation<LoginMutation, LoginMutationVariables>(LOGIN_MUTATION);
+    const { register, getValues, errors, handleSubmit, formState } = useForm<ILoginForm>({
+        mode: "onChange",
+    });
+    const onCompleted = (data: LoginMutation) => {
+        const {
+            login: { accepted, error, token },
+        } = data;
+        if(accepted) {
+            console.log(token);
+        }
+    };
+    const [loginMutation, { data: loginMutationResult, loading }] = useMutation<LoginMutation, LoginMutationVariables>(LOGIN_MUTATION, {
+        onCompleted,
+    });
     const onSubmit = () => {
-        const { email, password } = getValues();
-        loginMutation({
-            variables: {
-                email,
-                password,
-            },
-        });
+        if(!loading) {
+            const { email, password } = getValues();
+            loginMutation({
+                variables: {
+                    loginInput: {
+                        email,
+                        password,
+                    }
+                },
+            });
+        }
     };
 
     return (
@@ -65,8 +85,11 @@ export const Login = () => {
                         <FormError errorMessage={errors.password.message} />
                     )
                 }
-                <button className="btn">Sign In</button>
-                <div>회원가입</div>
+                <Button canClick={formState.isValid} loading={loading} actionText={"Sign In"} />
+                {loginMutationResult?.login.error && (
+                    <FormError errorMessage={loginMutationResult.login.error} />
+                )}
+                <div className="px-2">New to Pocket Market? <Link to="/signup" className="text-red-800 font-semibold text-lg hover:underline">Create an account</Link></div>
             </form>
         </div>
     );
