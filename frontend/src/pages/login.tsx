@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { gql, useMutation } from '@apollo/client';
 import logo from '../assets/logo.png';
 import { useForm } from 'react-hook-form';
@@ -9,6 +10,7 @@ import {
     LoginMutationVariables,
 } from '../types/LoginMutation';
 import { Button } from '../components/button';
+import { isLoggedInVar } from '../apollo';
 
 interface ILoginForm {
     email: string;
@@ -36,6 +38,7 @@ export const Login = () => {
         } = data;
         if(accepted) {
             console.log(token);
+            isLoggedInVar(true);
         }
     };
     const [loginMutation, { data: loginMutationResult, loading }] = useMutation<LoginMutation, LoginMutationVariables>(LOGIN_MUTATION, {
@@ -56,41 +59,46 @@ export const Login = () => {
     };
 
     return (
-        <div className="w-screen h-screen flex flex-col items-center justify-around">
-            <img src={logo} alt="logo" className="max-w-xs" />
-            <form onSubmit={handleSubmit(onSubmit)} className="grid gap-3 px-5 w-full max-w-3xl">
-                <input
-                    ref={register({ required: "이메일을 입력해주세요. " })}
-                    name="email"
-                    required
-                    type="email"
-                    placeholder="Email"
-                    className="input"
-                />
-                {
-                    errors.email?.message && (
-                        <FormError errorMessage={errors.email.message} />
-                    )
-                }
-                <input
-                    ref={register({ required: "비밀번호를 입력해주세요. " })}
-                    name="password"
-                    required
-                    type="password"
-                    placeholder="Password"
-                    className="input"
-                />
-                {
-                    errors.password?.message && (
-                        <FormError errorMessage={errors.password.message} />
-                    )
-                }
-                <Button canClick={formState.isValid} loading={loading} actionText={"Sign In"} />
-                {loginMutationResult?.login.error && (
-                    <FormError errorMessage={loginMutationResult.login.error} />
-                )}
-                <div className="px-2">New to Pocket Market? <Link to="/signup" className="text-red-800 font-semibold text-lg hover:underline">Create an account</Link></div>
-            </form>
-        </div>
+        <HelmetProvider>
+            <div className="w-screen h-screen flex flex-col items-center justify-around">
+                <Helmet>
+                    <title>로그인 | Pocket Market</title>
+                </Helmet>
+                <img src={logo} alt="logo" className="max-w-xs" />
+                <form onSubmit={handleSubmit(onSubmit)} className="grid gap-3 px-5 w-full max-w-3xl">
+                    <input
+                        ref={register({ required: "이메일을 입력해주세요. " })}
+                        name="email"
+                        required
+                        type="email"
+                        placeholder="Email"
+                        className="input"
+                    />
+                    {
+                        errors.email?.message && (
+                            <FormError errorMessage={errors.email.message} />
+                        )
+                    }
+                    <input
+                        ref={register({ required: "비밀번호를 입력해주세요. " })}
+                        name="password"
+                        required
+                        type="password"
+                        placeholder="Password"
+                        className="input"
+                    />
+                    {
+                        errors.password?.message && (
+                            <FormError errorMessage={errors.password.message} />
+                        )
+                    }
+                    <Button canClick={formState.isValid} loading={loading} actionText={"Sign In"} />
+                    {loginMutationResult?.login.error && (
+                        <FormError errorMessage={loginMutationResult.login.error} />
+                    )}
+                    <div className="px-2">포켓마켓에 처음이신가요? <Link to="/signup" className="text-red-800 font-semibold text-lg hover:underline">Create an account</Link></div>
+                </form>
+            </div>
+        </HelmetProvider>
     );
 };
