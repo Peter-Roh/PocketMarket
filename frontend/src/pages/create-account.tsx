@@ -49,7 +49,7 @@ export const CreateAccount = () => {
         if(accepted) {
             // redirect to where?
             alert("계정이 생성됐습니다. 로그인해주세요!");
-            history.push("/login");
+            history.push("/");
         }
     };
     const [createAccountMutation, { loading, data: createAccountMutationResult }] = useMutation<CreateAccountMutation, CreateAccountMutationVariables>(CREATE_ACCOUNT_MUTATION, {

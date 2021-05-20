@@ -13,6 +13,7 @@ export interface loggedInUser_loggedinUser {
   __typename: "User";
   id: number;
   email: string;
+  nickname: string;
   role: UserRole;
   verified: boolean;
 }

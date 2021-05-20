@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { gql, useMutation } from '@apollo/client';
-import logo from '../assets/logo.png';
+import logo from '../assets/common/logo.png';
 import { useForm } from 'react-hook-form';
 import { FormError } from '../components/form-error';
 import {

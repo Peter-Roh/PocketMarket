@@ -1,22 +1,27 @@
 import React from 'react';
-import gql from 'graphql-tag';
-import { isLoggedInVar } from '../apollo';
-import { useQuery } from '@apollo/client';
-import { loggedInUser } from '../types/loggedInUser';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { Header } from '../components/header';
+import { Restaurants } from '../pages/client/restaurants';
+import { ConfirmEmail } from '../pages/user/confirm-email';
+import { NotFound } from '../pages/404';
+import { useLoggedInUser } from '../hooks/useLoggedInUser';
 
-const ME = gql`
-    query loggedInUser {
-        loggedinUser {
-            id
-            email
-            role
-            verified
-        }
-    }
-`;
+const ClientRoutes = () => <>
+    <Switch>
+        <Route path="/" exact>
+            <Restaurants />
+        </Route>
+        <Route path="/confirm" exact>
+            <ConfirmEmail />
+        </Route>
+        <Route>
+            <NotFound />
+        </Route>
+    </Switch>
+</>;
 
 export const LoggedInRouter = () => {
-    const { data, loading, error } = useQuery<loggedInUser>(ME);
+    const { data, loading, error } = useLoggedInUser();
     if(!data || loading || error) {
         return (
             <div className="h-screen flex justify-center items-center">
@@ -25,8 +30,11 @@ export const LoggedInRouter = () => {
         );
     }
     return (
-        <div>
-            <div>Logged In</div>
-        </div>
+        <Router>
+            <Header />
+            <Switch>
+                { data.loggedinUser.role === "Client" && <ClientRoutes /> }
+            </Switch>
+        </Router>
     );
 };
