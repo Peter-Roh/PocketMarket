@@ -5,11 +5,19 @@ import { Restaurants } from '../pages/client/restaurants';
 import { ConfirmEmail } from '../pages/user/confirm-email';
 import { NotFound } from '../pages/404';
 import { useLoggedInUser } from '../hooks/useLoggedInUser';
+import { Mypage } from '../pages/user/mypage';
+import { EditProfile } from '../pages/user/edit-profile';
 
 const ClientRoutes = () => <>
     <Switch>
         <Route path="/" exact>
             <Restaurants />
+        </Route>
+        <Route path="/mypage" exact>
+            <Mypage />
+        </Route>
+        <Route path="/mypage/edit" exact>
+            <EditProfile />
         </Route>
         <Route path="/confirm" exact>
             <ConfirmEmail />
@@ -33,7 +41,7 @@ export const LoggedInRouter = () => {
         <Router>
             <Header />
             <Switch>
-                { data.loggedinUser.role === "Client" && <ClientRoutes /> }
+                <ClientRoutes />
             </Switch>
         </Router>
     );

@@ -31,6 +31,16 @@ export interface CreateAccountInput {
   profileImg?: string | null;
 }
 
+export interface EditProfileInput {
+  email?: string | null;
+  nickname?: string | null;
+  password?: string | null;
+  role?: UserRole | null;
+  profileImg?: string | null;
+  gender?: Gender | null;
+  phoneNumber?: string | null;
+}
+
 export interface LoginInput {
   email: string;
   password: string;

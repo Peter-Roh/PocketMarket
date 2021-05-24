@@ -16,7 +16,9 @@ export const Header:React.FC = () => {
             )}
             <header className="py-4">
                 <div className="container flex justify-between items-center">
-                    <img src={BI} alt="BI" className="w-52 md:w-80" />
+                    <Link to="/">
+                        <img src={BI} alt="BI" className="w-52 md:w-80" />
+                    </Link>
                     <span className="text-lg">
                         <Link to="/mypage">
                             <FontAwesomeIcon icon={faUser} className="text-xl" />

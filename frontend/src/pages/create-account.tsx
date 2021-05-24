@@ -81,6 +81,7 @@ export const CreateAccount = () => {
                 <title>회원가입 | Pocket Market</title>
             </Helmet>
             <form onSubmit={handleSubmit(onSubmit)} className="grid gap-3 px-5 w-full max-w-3xl">
+                <h4 className="title">회원가입</h4>
                 <input
                     ref={register({
                         required: "이메일을 입력해주세요. ",
